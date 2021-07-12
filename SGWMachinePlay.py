@@ -188,6 +188,7 @@ class SGW:
 
                         # Take a step, print the status, render the new state
                         observation, reward, done, info = self.env.step(encoded_action)
+                        self.latest_obs = observation
                         self.env.pp_info()
                         self.is_game_over = done
 
