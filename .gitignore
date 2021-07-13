@@ -1,3 +1,10 @@
+# Generated files from training / logs
+data_log.json
+*.h5f.*
+logs/rl-agent-test_training.csv
+logs/rl-agent-test_training.json
+logs/basic_training_plot.png
+
 # PYTHON GENERIC FROM GITHUB
 # Byte-compiled / optimized / DLL files
 __pycache__/
