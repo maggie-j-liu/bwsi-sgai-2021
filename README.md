@@ -25,7 +25,7 @@ check out this [help page](https://docs.github.com/en/github/getting-started-wit
 
 Once Anaconda, Python, and Git are installed, here are a list of packages that still need to be installed. To install 
 these, use pip as follows:
-`pip install tensorflow keras keras-rl2 gym>=0.2.3 pygame argparse uuid json xlrd pandas matplotlib`
+`pip install tensorflow keras keras-rl2 gym>=0.2.3 pygame argparse uuid xlrd pandas matplotlib`
 
 ## Getting Started
 Step 0: Install python and the required packages by following the Prerequisites / Installation above.
@@ -34,8 +34,8 @@ Step 1: Follow instructions on how to set up an SSH key between your computer an
 
 Finally: Clone the repository via command prompt:
 ```
-git clone git@github.mit.edu:BWSI-SGAI-2021/SGW_MAIN.git
-cd SGW
+git clone git@github.mit.edu:BWSI-SGAI-2021/SGW_CW3.git
+cd SGW_CW3
 git status
 ```
 
