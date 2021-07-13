@@ -42,7 +42,7 @@ if __name__ == '__main__':
         max_turns=200,
         max_energy=50,
         rand_prof=MapProfiles.trolley,
-        num_rows=25,
-        num_cols=25
+        num_rows=num_rows,
+        num_cols=num_cols
     )
     sgw_env.run()
