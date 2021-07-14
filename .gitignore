@@ -5,6 +5,8 @@ logs/rl-agent-test_training.csv
 logs/rl-agent-test_training.json
 logs/basic_training_plot.png
 
+.DS_Store
+
 # PYTHON GENERIC FROM GITHUB
 # Byte-compiled / optimized / DLL files
 __pycache__/
