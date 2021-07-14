@@ -41,7 +41,7 @@ if __name__ == '__main__':
         training_steps=training_steps,
         max_turns=200,
         max_energy=max_energy,
-        rand_prof=MapProfiles.trolley,
+        rand_prof=rand_prof,
         num_rows=num_rows,
         num_cols=num_cols
     )
