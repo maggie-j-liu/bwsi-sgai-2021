@@ -40,7 +40,7 @@ if __name__ == '__main__':
         data_log_path=data_log_path,
         training_steps=training_steps,
         max_turns=200,
-        max_energy=50,
+        max_energy=max_energy,
         rand_prof=MapProfiles.trolley,
         num_rows=num_rows,
         num_cols=num_cols
