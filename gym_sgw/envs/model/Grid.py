@@ -26,7 +26,7 @@ class Grid:
         SYMBOL_PLAYER_LIST = ['^', '>', 'v', '<']
         SYMBOL_INJURED = '*'
         SYMBOL_ZOMBIE = 'Z'
-        SYMBOL_BATTERY = 'B'
+        SYMBOL_BATTERY = '#'
         SYMBOL_PEDESTRIAN = '@'
         SHEET_INDEX = 0
 
