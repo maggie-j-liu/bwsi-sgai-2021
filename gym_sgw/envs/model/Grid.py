@@ -19,6 +19,7 @@ class Grid:
         self.player_location = None
         self.grid = self.read_in_map() if map_file is not None else self.random_grid()
         self.map_max_energy = None
+        self.already_picked_up = False
 
     def read_in_map(self):
 
@@ -467,55 +468,66 @@ class Grid:
         #     player_down = 6
         #     player_left = 7
         #     player_right = 8
+        # can have player + injured at the same time, for a total of 13 states
+        # The second part is a map of the terrains as follows:
+        #     none = 0
+        #     out_of_bounds = 1
+        #     wall = 2
+        #     floor = 3
+        #     mud = 4
+        #     fire = 5
+        #     hospital = 6
+        # formula: terrain * 13 + object
 
         cell = self.grid[row][col]
-        cell_val = 0
+        terrain = 0
+        obj_val = 0
 
         # Get the ten's place based on the terrain, only ever one kind of terrain
         if cell.terrain == Terrains.none:
-            cell_val += 0
+            terrain = 0
         elif cell.terrain == Terrains.out_of_bounds:
-            cell_val += 10
+            terrain = 1
         elif cell.terrain == Terrains.wall:
-            cell_val += 20
+            terrain = 2
         elif cell.terrain == Terrains.floor:
-            cell_val += 30
+            terrain = 3
         elif cell.terrain == Terrains.mud:
-            cell_val += 40
+            terrain = 4
         elif cell.terrain == Terrains.fire:
-            cell_val += 50
+            terrain = 5
         elif cell.terrain == Terrains.hospital:
-            cell_val += 60
+            terrain = 6
         else:
             raise ValueError('Invalid cell terrain while retrieving cell value for encoding/decoding.')
 
         # Technically supports more than one object so order here matters
         if MapObjects.player in cell.objects:
             if self.player_orientation == Orientations.up:
-                cell_val += 5
+                obj_val = 5
             elif self.player_orientation == Orientations.down:
-                cell_val += 6
+                obj_val = 6
             elif self.player_orientation == Orientations.left:
-                cell_val += 7
+                obj_val = 7
             elif self.player_orientation == Orientations.right:
-                cell_val += 8
+                obj_val = 8
             else:
                 raise ValueError('Invalid player orientation while retrieving cell value for encoding/decoding')
-        elif MapObjects.injured in cell.objects:
-            cell_val += 1
+        if MapObjects.battery in cell.objects:
+            obj_val = 1
         elif MapObjects.pedestrian in cell.objects:
-            cell_val += 2
-        elif MapObjects.battery in cell.objects:
-            cell_val += 4
+            obj_val = 2
+        elif MapObjects.injured in cell.objects:
+            obj_val += 4
         elif MapObjects.zombie in cell.objects:
-            cell_val += 3
+            obj_val = 3
         elif MapObjects.none in cell.objects:
-            cell_val += 0
+            obj_val = 0
         else:
             # No objects assigned to cell
-            cell_val += 0  # Mark it the same as none for the machine
+            obj_val = 0  # Mark it the same as none for the machine
 
-        return cell_val
+        return terrain * 13 + obj_val
 
     def human_encode(self, turns_executed, action_taken, energy_remaining, game_score):
         # Package up "Grid" object in a way that is viewable to humans (multi-line string)
