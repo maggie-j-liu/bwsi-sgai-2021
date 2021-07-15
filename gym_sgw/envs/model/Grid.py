@@ -530,9 +530,6 @@ class Grid:
             obj_val = 3
         elif MapObjects.none in cell.objects:
             obj_val = 0
-        else:
-            # No objects assigned to cell
-            obj_val = 0  # Mark it the same as none for the machine
 
         return terrain * 13 + obj_val
 
