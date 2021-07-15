@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Tuple, Union
 import gym
 from gym import spaces
 from gym_sgw.envs.enums.Enums import Actions, PlayTypes, MapProfiles, Terrains, MapObjects
@@ -127,7 +127,7 @@ class SGW(gym.Env):
         return Actions.none
 
     @staticmethod
-    def decode_raw_action(action: Actions) -> (str, int):
+    def decode_raw_action(action: Actions) -> Tuple[str, int]:
         # Reverse process of the encoding, takes in an enum action and spits out an unboxable decoding of the action
         # Use this to make the Actions Enum more readable, returns the label and int value for the enum.
         # Use if you want to go from Enum to something more understandable.
