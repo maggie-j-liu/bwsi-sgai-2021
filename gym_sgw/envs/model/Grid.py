@@ -357,16 +357,23 @@ class Grid:
         VIC_PENALTY = -1  # -1 per squished victim (if you already have one onboard and enter it’s space, SQUISH)
         FIRE_PENALTY = -5  # -5 per entry into fire (each entry; but otherwise it doesn’t actually hurt you)
         ZOMBIE_REWARD = 2  # +2 per squished zombie (ZOMBIE DEATH!)
+        PICKUP_REWARD = 1  # +1 for picking an victim up
         t_score = 0
 
         # Grab the cell where the player is (after the move)
         end_cell: Cell = self.grid[self.player_location[0]][self.player_location[1]]
+
+        # Add a reward for picking victim up for the first time
+        if MapObjects.injured in end_cell.objects and not self.already_picked_up:
+            self.already_picked_up = True
+            t_score += PICKUP_REWARD
 
         # Add a reward if they rescued a victim
         if end_cell.terrain == Terrains.hospital:
             if MapObjects.injured in end_cell.objects:
                 t_score += RESCUE_REWARD  # Deliver the injured
                 end_cell.remove_map_object(MapObjects.injured)  # Remove them from the board
+                self.already_picked_up = False  # Clear the ambulance
 
         # Add a penalty if you squished a pedestrian
         if MapObjects.pedestrian in end_cell.objects:
