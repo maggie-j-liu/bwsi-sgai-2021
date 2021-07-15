@@ -88,7 +88,7 @@ class SGW:
                            enable_dueling_network=True,
                            # dueling_type='avg'  # what other options are there?
                            )
-        sgw_dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+        sgw_dqn.compile(Adam(learning_rate=1e-3), metrics=['mae'])
 
         # Make sure you update this model if you update it in training
         sgw_dqn.load_weights(self.agent_file)
