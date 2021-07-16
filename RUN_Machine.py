@@ -27,11 +27,11 @@ if __name__ == '__main__':
     # Set runtime args
     agent_file = args.agentfile
     data_log_file = args.outfile
-    map_file = None  # 'gym_sgw/envs/maps/_SampleMap.xls'  # None will generate a random map, map files have top priority
+    map_file = 'gym_sgw/envs/maps/_map5.xls' #  None  # 'gym_sgw/envs/maps/_SampleMap.xls'  # None will generate a random map, map files have top priority
     max_energy = 50
     rand_prof = MapProfiles.trolley
-    num_rows = 25
-    num_cols = 25
+    num_rows = 7
+    num_cols = 7
 
     # Create and run game with those params
     sgw_env = SGW(

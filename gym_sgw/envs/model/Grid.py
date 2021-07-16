@@ -456,8 +456,7 @@ class Grid:
 
     def _get_machine_cell_value(self, row, col):
 
-        # Encode each cell value with an integer between 0 and 70
-        # The ten's place is a map of the terrains as follows:
+        # The first part is a map of the terrains as follows:
         #     none = 00's
         #     out_of_bounds = 10's
         #     wall = 20's
@@ -465,17 +464,6 @@ class Grid:
         #     mud = 40's
         #     fire = 50's
         #     hospital = 60's
-        # The one's place is a map of the map object as follows:
-        #     none = 0
-        #     injured = 1
-        #     pedestrian = 2
-        #     zombie = 3
-        #     battery = 4
-        #     player_up = 5
-        #     player_down = 6
-        #     player_left = 7
-        #     player_right = 8
-        # can have player + injured at the same time, for a total of 13 states
         # The second part is a map of the terrains as follows:
         #     none = 0
         #     out_of_bounds = 1
@@ -490,21 +478,13 @@ class Grid:
         terrain = 0
         obj_val = 0
 
-        # Get the ten's place based on the terrain, only ever one kind of terrain
-        if cell.terrain == Terrains.none:
+        # Get the tens place based on the terrain, only ever one kind of terrain
+        if cell.terrain == Terrains.none or cell.terrain == Terrains.out_of_bounds or cell.terrain == Terrains.wall:
             terrain = 0
-        elif cell.terrain == Terrains.out_of_bounds:
+        elif cell.terrain == Terrains.floor or cell.terrain == Terrains.mud or cell.terrain == Terrains.fire:
             terrain = 1
-        elif cell.terrain == Terrains.wall:
-            terrain = 2
-        elif cell.terrain == Terrains.floor:
-            terrain = 3
-        elif cell.terrain == Terrains.mud:
-            terrain = 4
-        elif cell.terrain == Terrains.fire:
-            terrain = 5
         elif cell.terrain == Terrains.hospital:
-            terrain = 6
+            terrain = 2
         else:
             raise ValueError('Invalid cell terrain while retrieving cell value for encoding/decoding.')
 

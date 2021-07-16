@@ -33,7 +33,7 @@ class SGW:
         self.allow_overwrite = True
         self.training_steps = training_steps
         self.test_cases = 1
-        self._verbosity = 1
+        self._verbosity = 0
         self.max_turns = max_turns  # to prevent endless loops and games
         # Env details
         self.env = None
@@ -52,6 +52,7 @@ class SGW:
         self.env.rand_profile = self.rand_prof
         self.env.num_rows = self.num_rows
         self.env.num_cols = self.num_cols
+        self.env.map_file = 'gym_sgw/envs/maps/_map5.xls'
         self.env.reset()
         # Report success
         print('Created new environment {0} with GameID: {1}'.format(self.env_name, self.game_id))
@@ -95,13 +96,13 @@ class SGW:
                            # dueling_type='avg'  # what other options are there?
                            )
         sgw_dqn.compile(Adam(learning_rate=1e-3), metrics=['mae'])
-
+        sgw_dqn.load_weights('sgw_dqn_rl-agent-test_weights.h5f')
         # Training
         history_callback = sgw_dqn.fit(self.env,
                                        nb_steps=self.training_steps,
                                        verbose=self._verbosity,
                                        nb_max_episode_steps=self.max_turns,
-                                       log_interval=int(self.training_steps / 100)
+                                       log_interval=int(self.training_steps / 10)
                                        )
         # Create a dataframe and output the per epoch data
         hist_df = pd.DataFrame(history_callback.history)

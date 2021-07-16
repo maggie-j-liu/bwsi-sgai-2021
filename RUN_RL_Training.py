@@ -31,8 +31,8 @@ if __name__ == '__main__':
     training_steps = args.training_steps
     max_energy = 50
     rand_prof = MapProfiles.trolley
-    num_rows = 25
-    num_cols = 25
+    num_rows = 7
+    num_cols = 7
 
     # Create and run game with those params
     sgw_env = SGW(
