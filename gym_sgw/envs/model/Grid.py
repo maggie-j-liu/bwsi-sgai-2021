@@ -354,8 +354,8 @@ class Grid:
         RESCUE_REWARD = 9  # +9 per rescued victim (picked up one by one and delivered to hospital)
         PED_PENALTY = -10  # -10 per squished pedestrian (or mobile pedestrian)
         VIC_PENALTY = -1  # -1 per squished victim (if you already have one onboard and enter it’s space, SQUISH)
-        FIRE_PENALTY = -5  # -5 per entry into fire (each entry; but otherwise it doesn’t actually hurt you)
-        #ZOMBIE_REWARD = 2  # +2 per squished zombie (ZOMBIE DEATH!)
+        # FIRE_PENALTY = -5  # -5 per entry into fire (each entry; but otherwise it doesn’t actually hurt you)
+        # ZOMBIE_REWARD = 2  # +2 per squished zombie (ZOMBIE DEATH!)
         t_score = 0
 
         # Grab the cell where the player is (after the move)
@@ -378,8 +378,8 @@ class Grid:
             end_cell.remove_map_object(MapObjects.injured)
 
         # Add a penalty for going into fire
-        if end_cell.terrain == Terrains.fire:
-            t_score += FIRE_PENALTY  # ouch
+        # if end_cell.terrain == Terrains.fire:
+        #     t_score += FIRE_PENALTY  # ouch
 
         # Add reward for squishing a zombie
         #if MapObjects.zombie in end_cell.objects:
@@ -393,6 +393,7 @@ class Grid:
         BAT_POWER = 20  # Battery = + 20 energy
         #MUD_DRAIN = -5  # Mud = 5 energy penalty
         BASE_ENERGY = -1  # All moves costs something
+        FIRE_DRAIN = -3
         t_energy = 0
 
         # Grab the cell where the player is (after the move)
@@ -406,6 +407,10 @@ class Grid:
         # Drain energy if you hit mud (do not remove it from the board)
         #if end_cell.terrain == Terrains.mud:
         #    t_energy += MUD_DRAIN  # wah wah
+
+        # drain energy if you hit fire
+        if end_cell.terrain == Terrains.fire:
+            t_energy += FIRE_DRAIN
 
         # Add in base energy
         t_energy += BASE_ENERGY
