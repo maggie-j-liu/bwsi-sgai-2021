@@ -537,22 +537,14 @@ class Grid:
         return json.dumps(grid_data)
 
     def machine_encode(self, turns_executed, action_taken, energy_remaining, game_score):
-        # Package up the "grid" object to be compatible with state space
-        # self.observation_space = spaces.Box(low=0, high=60, shape=(self.num_rows, self.num_cols), dtype='uint8')
-        # Create a numpy array with the right dtype filled with zeros and then add in the state values for each cell
-        machine_state = np.zeros((self.rows + 1, self.cols), dtype='uint8')
-        for r_ in range(self.rows):
-            for c_ in range(self.cols):
-                cell_val = self._get_machine_cell_value(r_, c_)
-                machine_state[r_, c_] = cell_val
-
-        # Add some status fields to the state in the last row
-        machine_state[self.rows, 0] = int(turns_executed)
-        machine_state[self.rows, 1] = int(action_taken[1])
-        machine_state[self.rows, 2] = int(energy_remaining)
-        machine_state[self.rows, 3] = int(game_score)
-
-        return machine_state
+        grid_data = dict()
+        grid_data['status'] = {
+            'turns_executed': turns_executed,
+            'action_taken': action_taken,
+            'energy_remaining': energy_remaining,
+            'game_score': game_score
+        }
+        return self.grid, grid_data
 
     def render(self, turns_executed, action_taken, energy_remaining, game_score, cell_size=30):
         # Print out the human encoding to standard out
