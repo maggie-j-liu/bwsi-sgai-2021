@@ -47,7 +47,6 @@ class SGW(gym.Env):
         return obs
 
     def step(self, raw_action: Actions):
-
         # Ensure that our type assertion holds
         action = self.encode_raw_action(raw_action)
 

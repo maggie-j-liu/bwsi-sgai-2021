@@ -35,7 +35,7 @@ class SGW:
     def _setup(self):
         # Game parameters
         self.env = gym.make(self.ENV_NAME)
-        self.env.play_type = PlayTypes.human  # We will get human states and observations back
+        self.env.play_type = PlayTypes.machine  # We will get human states and observations back
         self.env.max_energy = self.max_energy
         self.env.map_file = self.map_file
         self.env.rand_profile = self.rand_prof
@@ -94,12 +94,12 @@ class SGW:
 
     def run(self):
 
-        print('Starting new game with human play!')
+        print('Starting new game with machine play!')
         # Set up pygame loop for game, capture actions, and redraw the screen on action
         self.env.reset()
         pg.init()
         self.game_screen = pg.display.set_mode((1000, 800))
-        pg.display.set_caption('SGW Human Play')
+        pg.display.set_caption('SGW Machine Play')
         self.play_area = pg.Surface((self.env.grid.rows * self.cell_size, self.env.grid.cols * self.cell_size))
         self.play_area.fill(pg.color.Color(MapColors.play_area.value))
         self.game_screen.fill(pg.color.Color(MapColors.game_screen.value))
@@ -141,6 +141,9 @@ class SGW:
 
                             # Take a step, print the status, render the new state
                             observation, reward, done, info = self.env.step(encoded_action)
+                            print('observation:')
+                            print(observation[0][5][5].terrain)
+                            print(observation[0][5][5].objects)
                             self.env.pp_info()
                             self.is_game_over = done
 
