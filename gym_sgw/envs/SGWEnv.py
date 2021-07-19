@@ -54,6 +54,10 @@ class SGW(gym.Env):
         turn_score, turn_energy, is_done = self._do_turn(action=action)
         self.latest_action = self.decode_raw_action(action)
         self.turns_executed += 1
+        if self.turns_executed % 4 == 0:
+            self.grid.move_fire()
+        elif self.turns_executed % 2 == 0:
+            self.grid.predict_fire()
 
         # Update score and turn counters
         self.total_score += turn_score

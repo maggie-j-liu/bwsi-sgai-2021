@@ -290,6 +290,20 @@ class Grid:
 
         return turn_score, energy_action, done
 
+    def move_fire(self):
+        # locate predicted squares
+        # change square status to fire
+
+        pass
+
+    def predict_fire(self):
+        # locate current squares w/ fire
+        # get probability of fire spreading
+        # locate available neighboring squares
+        # change square status to future fire
+
+        pass
+
     def _execute_step_forward(self):
 
         # Get the next position based on orientation
