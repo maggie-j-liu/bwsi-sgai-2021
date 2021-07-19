@@ -14,8 +14,7 @@ class Terrains(IntEnum):
 class MapObjects(IntEnum):
     none = 0
     injured = 1
-    pedestrian = 2
-    # zombie = 3
+    #zombie = 3
     battery = 4
     player = 5
 

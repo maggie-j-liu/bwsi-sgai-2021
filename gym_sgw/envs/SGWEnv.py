@@ -201,9 +201,7 @@ class SGW(gym.Env):
                 cell_val = 'B'
             elif MapObjects(mapobject_index) == MapObjects.injured:
                 cell_val = 'I'
-            elif MapObjects(mapobject_index) == MapObjects.pedestrian:
-                cell_val = 'P'
-            # elif MapObjects(mapobject_index) == MapObjects.zombie:
+            #elif MapObjects(mapobject_index) == MapObjects.zombie:
             #    cell_val = 'Z'
             else:
                 raise ValueError('Invalid cell MapObject while printing state key.')
