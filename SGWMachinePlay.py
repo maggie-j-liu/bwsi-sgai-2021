@@ -117,8 +117,8 @@ class SGW:
                     cell_color = pg.color.Color(MapColors.wall_tile.value)
                 elif cell.terrain == Terrains.floor:
                     cell_color = pg.color.Color(MapColors.floor_tile.value)
-                elif cell.terrain == Terrains.mud:
-                    cell_color = pg.color.Color(MapColors.mud_tile.value)
+                #elif cell.terrain == Terrains.mud:
+                #    cell_color = pg.color.Color(MapColors.mud_tile.value)
                 elif cell.terrain == Terrains.fire:
                     cell_color = pg.color.Color(MapColors.fire_tile.value)
                 elif cell.terrain == Terrains.hospital:
