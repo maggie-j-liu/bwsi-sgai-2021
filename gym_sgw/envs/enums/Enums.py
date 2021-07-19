@@ -6,7 +6,7 @@ class Terrains(IntEnum):
     out_of_bounds = 1
     wall = 2
     floor = 3
-    #mud = 4
+    # mud = 4
     fire = 5
     hospital = 6
 

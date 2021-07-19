@@ -173,7 +173,7 @@ class SGW(gym.Env):
                 cell_color = PBack.darkgrey
             elif Terrains(terrain_index) == Terrains.floor:
                 cell_color = PBack.lightgrey
-            #elif Terrains(terrain_index) == Terrains.mud:
+            # elif Terrains(terrain_index) == Terrains.mud:
             #    cell_color = PBack.orange
             elif Terrains(terrain_index) == Terrains.fire:
                 cell_color = PBack.red
