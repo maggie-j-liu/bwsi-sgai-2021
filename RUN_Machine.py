@@ -4,7 +4,6 @@ from SGWMachinePlay import SGW
 from gym_sgw.envs.enums.Enums import MapProfiles
 
 parser = argparse.ArgumentParser(description='CLI Argument Parser for Human Play.')
-parser.add_argument('--agentfile', help='Agent file path and file name.', default='sgw_dqn_rl-agent-test_weights.h5f')
 parser.add_argument('--outfile', help='Data logging file name.', default='data_log.json')
 parser.add_argument('--creation', help='Allow creation of output file.', default=True, action='store_true')
 
@@ -25,7 +24,6 @@ if __name__ == '__main__':
     validate_data(args.outfile, allow_creation=args.creation)
 
     # Set runtime args
-    agent_file = args.agentfile
     data_log_file = args.outfile
     map_file = None  # 'gym_sgw/envs/maps/_SampleMap.xls'  # None will generate a random map, map files have top priority
     max_energy = 50
@@ -35,7 +33,6 @@ if __name__ == '__main__':
 
     # Create and run game with those params
     sgw_env = SGW(
-        agent_file=agent_file,
         data_log_file=data_log_file,
         map_file=map_file,
         max_energy=max_energy,

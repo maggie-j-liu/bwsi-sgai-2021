@@ -36,7 +36,6 @@ class SGW:
         # Game parameters
         self.env = gym.make(self.ENV_NAME)
         self.env.play_type = PlayTypes.human  # We will get human states and observations back
-        self.env.render_mode = PlayTypes.machine  # We'll draw these manually
         self.env.max_energy = self.max_energy
         self.env.map_file = self.map_file
         self.env.rand_profile = self.rand_prof
@@ -98,7 +97,6 @@ class SGW:
         print('Starting new game with human play!')
         # Set up pygame loop for game, capture actions, and redraw the screen on action
         self.env.reset()
-        self.env.render_mode = PlayTypes.machine  # We'll draw the screen manually and not render each turn
         pg.init()
         self.game_screen = pg.display.set_mode((1000, 800))
         pg.display.set_caption('SGW Human Play')

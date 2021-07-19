@@ -11,7 +11,6 @@ class SGW(gym.Env):
     def __init__(self):
         # Tunable parameters
         self.play_type = PlayTypes.machine
-        self.render_mode = PlayTypes.machine
         self.max_energy = 50
         self.map_file = None
         self.rand_profile = MapProfiles.uniform
@@ -91,19 +90,11 @@ class SGW(gym.Env):
         else:
             raise ValueError('Failed to find acceptable play type.')
 
-    def render(self, mode: PlayTypes = PlayTypes.human):
-        if self.render_mode == PlayTypes.human or mode == PlayTypes.human:
-            return self.grid.human_render(turns_executed=self.turns_executed,
-                                          action_taken=self.latest_action,
-                                          energy_remaining=(self.max_energy + self.energy_used),
-                                          game_score=self.total_score, cell_size=30)
-        elif self.render_mode == PlayTypes.machine or mode == PlayTypes.machine:
-            return self.grid.machine_render(turns_executed=self.turns_executed,
-                                            action_taken=self.latest_action,
-                                            energy_remaining=(self.max_energy + self.energy_used),
-                                            game_score=self.total_score)
-        else:
-            raise ValueError('Failed to find acceptable play type.')
+    def render(self):
+        return self.grid.render(turns_executed=self.turns_executed,
+                                    action_taken=self.latest_action,
+                                    energy_remaining=(self.max_energy + self.energy_used),
+                                    game_score=self.total_score, cell_size=30)
 
     def pp_info(self):
         self.grid.pp_info(turns_executed=self.turns_executed,
@@ -230,7 +221,6 @@ if __name__ == '__main__':
     # Quick Demo of class
     my_sgw = SGW()  # Set up
     my_sgw.play_type = PlayTypes.machine
-    my_sgw.render_mode = PlayTypes.machine
     my_sgw.max_energy = 50
     my_sgw.map_file = None
     my_sgw.rand_profile = MapProfiles.trolley
