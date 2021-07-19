@@ -393,6 +393,7 @@ class Grid:
         BAT_POWER = 20  # Battery = + 20 energy
         #MUD_DRAIN = -5  # Mud = 5 energy penalty
         BASE_ENERGY = -1  # All moves costs something
+        FIRE_DRAIN = -3
         t_energy = 0
 
         # Grab the cell where the player is (after the move)
@@ -406,6 +407,10 @@ class Grid:
         # Drain energy if you hit mud (do not remove it from the board)
         #if end_cell.terrain == Terrains.mud:
         #    t_energy += MUD_DRAIN  # wah wah
+
+        # drain energy if you hit fire
+        if end_cell.terrain == Terrains.fire:
+            t_energy += FIRE_DRAIN
 
         # Add in base energy
         t_energy += BASE_ENERGY
