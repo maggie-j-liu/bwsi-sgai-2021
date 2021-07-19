@@ -206,6 +206,13 @@ class Grid:
             p_injured = 96
             #p_zombie = 96
             p_battery = 100
+        elif mode == MapProfiles.simple:
+            p_wall = 35
+            p_floor = 99
+            p_hospital = 99
+            p_fire = 99
+            p_injured = 100
+            p_battery = 100
         else:  # Default to the uniform case
             p_wall = 11
             p_floor = 23
@@ -514,12 +521,13 @@ class Grid:
         return json.dumps(grid_data)
 
     def machine_encode(self, turns_executed, action_taken, energy_remaining, game_score):
-        grid_data = dict()
-        grid_data['status'] = {
+        grid_data = {
             'turns_executed': turns_executed,
             'action_taken': action_taken,
             'energy_remaining': energy_remaining,
-            'game_score': game_score
+            'game_score': game_score,
+            'player_location': self.player_location,
+            'player_orientation': self.player_orientation
         }
         return self.grid, grid_data
 

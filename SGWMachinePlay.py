@@ -4,6 +4,7 @@ import gym
 import gym_sgw  # Required, don't remove!
 import pygame as pg
 from gym_sgw.envs.enums.Enums import Actions, Terrains, PlayTypes, MapProfiles, MapColors
+from choose_action import choose_action
 
 
 class SGW:
@@ -28,6 +29,7 @@ class SGW:
         self.cell_size = 30
         self.game_screen = None
         self.play_area = None
+        self.latest_obs = None
 
         # Always do these actions upon start
         self._setup()
@@ -41,7 +43,7 @@ class SGW:
         self.env.rand_profile = self.rand_prof
         self.env.num_rows = self.num_rows
         self.env.num_cols = self.num_cols
-        self.env.reset()
+        self.latest_obs = self.env.reset()
         # Report success
         print('Created new environment {0} with GameID: {1}'.format(self.ENV_NAME, self.GAME_ID))
 
@@ -96,7 +98,7 @@ class SGW:
 
         print('Starting new game with machine play!')
         # Set up pygame loop for game, capture actions, and redraw the screen on action
-        self.env.reset()
+        self.latest_obs = self.env.reset()
         pg.init()
         self.game_screen = pg.display.set_mode((1000, 800))
         pg.display.set_caption('SGW Machine Play')
@@ -131,7 +133,7 @@ class SGW:
 
                     if keep_playing:
                         # TODO: add logic to choose an action
-                        action = Actions.step_forward
+                        action = choose_action(self.latest_obs)
 
                     if action is not None:
                         if action in [Actions.step_forward, Actions.turn_right, Actions.turn_left, Actions.none]:
@@ -141,9 +143,7 @@ class SGW:
 
                             # Take a step, print the status, render the new state
                             observation, reward, done, info = self.env.step(encoded_action)
-                            print('observation:')
-                            print(observation[0][5][5].terrain)
-                            print(observation[0][5][5].objects)
+                            self.latest_obs = observation
                             self.env.pp_info()
                             self.is_game_over = done
 

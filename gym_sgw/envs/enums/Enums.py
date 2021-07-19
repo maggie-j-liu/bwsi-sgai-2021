@@ -46,6 +46,7 @@ class MapProfiles(IntEnum):
     spoiled = 4
     twisty = 5
     volcano = 6
+    simple = 7
 
 
 class MapColors(Enum):
