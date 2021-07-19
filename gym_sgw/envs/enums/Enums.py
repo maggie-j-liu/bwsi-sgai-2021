@@ -6,7 +6,7 @@ class Terrains(IntEnum):
     out_of_bounds = 1
     wall = 2
     floor = 3
-    #mud = 4
+    # mud = 4
     fire = 5
     hospital = 6
 
@@ -15,7 +15,7 @@ class MapObjects(IntEnum):
     none = 0
     injured = 1
     pedestrian = 2
-    #zombie = 3
+    # zombie = 3
     battery = 4
     player = 5
 

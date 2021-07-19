@@ -47,7 +47,6 @@ class SGW(gym.Env):
         return obs
 
     def step(self, raw_action: Actions):
-
         # Ensure that our type assertion holds
         action = self.encode_raw_action(raw_action)
 
@@ -174,7 +173,7 @@ class SGW(gym.Env):
                 cell_color = PBack.darkgrey
             elif Terrains(terrain_index) == Terrains.floor:
                 cell_color = PBack.lightgrey
-            #elif Terrains(terrain_index) == Terrains.mud:
+            # elif Terrains(terrain_index) == Terrains.mud:
             #    cell_color = PBack.orange
             elif Terrains(terrain_index) == Terrains.fire:
                 cell_color = PBack.red
@@ -200,7 +199,7 @@ class SGW(gym.Env):
                 cell_val = 'I'
             elif MapObjects(mapobject_index) == MapObjects.pedestrian:
                 cell_val = 'P'
-            #elif MapObjects(mapobject_index) == MapObjects.zombie:
+            # elif MapObjects(mapobject_index) == MapObjects.zombie:
             #    cell_val = 'Z'
             else:
                 raise ValueError('Invalid cell MapObject while printing state key.')

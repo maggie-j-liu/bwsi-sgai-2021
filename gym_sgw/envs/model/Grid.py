@@ -25,7 +25,7 @@ class Grid:
         # Hard-coded Constants
         SYMBOL_PLAYER_LIST = ['^', '>', 'v', '<']
         SYMBOL_INJURED = '*'
-        #SYMBOL_ZOMBIE = 'Z'
+        # SYMBOL_ZOMBIE = 'Z'
         SYMBOL_BATTERY = '#'
         SYMBOL_PEDESTRIAN = '@'
         SHEET_INDEX = 0
@@ -111,7 +111,7 @@ class Grid:
                         raise ValueError('Invalid player icon')
                 elif sheet_cell.value == SYMBOL_INJURED:
                     grid_cell.add_map_object(MapObjects(1))
-                #elif sheet_cell.value == SYMBOL_ZOMBIE:
+                # elif sheet_cell.value == SYMBOL_ZOMBIE:
                 #    grid_cell.add_map_object(MapObjects(3))
                 elif sheet_cell.value == SYMBOL_BATTERY:
                     grid_cell.add_map_object(MapObjects(4))
@@ -160,70 +160,70 @@ class Grid:
             p_floor = 79
             p_hospital = 80
             p_fire = 83
-            #p_mud = 86
+            # p_mud = 86
             p_injured = 89
             p_pedestrian = 94
-            #p_zombie = 99
+            # p_zombie = 99
             p_battery = 100
         elif mode == MapProfiles.sparse:
             p_wall = 20
             p_floor = 79
             p_hospital = 80
             p_fire = 83
-            #p_mud = 86
+            # p_mud = 86
             p_injured = 89
             p_pedestrian = 94
-            #p_zombie = 99
+            # p_zombie = 99
             p_battery = 100
         elif mode == MapProfiles.pacman:
             p_wall = 35
             p_floor = 65
             p_hospital = 65
             p_fire = 65
-            #p_mud = 65
+            # p_mud = 65
             p_injured = 65
             p_pedestrian = 75
-            #p_zombie = 95
+            # p_zombie = 95
             p_battery = 100
         elif mode == MapProfiles.spoiled:
             p_wall = 10
             p_floor = 64
             p_hospital = 69
             p_fire = 72
-            #p_mud = 75
+            # p_mud = 75
             p_injured = 95
             p_pedestrian = 100
-            #p_zombie = 100
+            # p_zombie = 100
             p_battery = 100
         elif mode == MapProfiles.twisty:
             p_wall = 37
             p_floor = 88
             p_hospital = 89
             p_fire = 90
-            #p_mud = 91
+            # p_mud = 91
             p_injured = 96
             p_pedestrian = 96
-            #p_zombie = 96
+            # p_zombie = 96
             p_battery = 100
         elif mode == MapProfiles.volcano:
             p_wall = 2
             p_floor = 53
             p_hospital = 54
             p_fire = 79
-            #p_mud = 91
+            # p_mud = 91
             p_injured = 96
             p_pedestrian = 96
-            #p_zombie = 96
+            # p_zombie = 96
             p_battery = 100
         else:  # Default to the uniform case
             p_wall = 11
             p_floor = 23
             p_hospital = 34
             p_fire = 45
-            #p_mud = 56
+            # p_mud = 56
             p_injured = 67
             p_pedestrian = 78
-            #p_zombie = 89
+            # p_zombie = 89
             p_battery = 100
 
         # for each cell in the grid
@@ -251,13 +251,13 @@ class Grid:
                     grid[r_][c_].terrain = Terrains.hospital
                 elif cell_roll < p_fire:
                     grid[r_][c_].terrain = Terrains.fire
-                #elif cell_roll < p_mud:
+                # elif cell_roll < p_mud:
                 #    grid[r_][c_].terrain = Terrains.mud
                 elif cell_roll < p_injured:
                     grid[r_][c_].add_map_object(MapObjects.injured)
                 elif cell_roll < p_pedestrian:
                     grid[r_][c_].add_map_object(MapObjects.pedestrian)
-                #elif cell_roll < p_zombie:
+                # elif cell_roll < p_zombie:
                 #    grid[r_][c_].add_map_object(MapObjects.zombie)
                 elif cell_roll <= p_battery:
                     grid[r_][c_].add_map_object(MapObjects.battery)
@@ -382,7 +382,7 @@ class Grid:
         #     t_score += FIRE_PENALTY  # ouch
 
         # Add reward for squishing a zombie
-        #if MapObjects.zombie in end_cell.objects:
+        # if MapObjects.zombie in end_cell.objects:
         #    t_score += ZOMBIE_REWARD  # RUN IT OVER!
         #    end_cell.remove_map_object(MapObjects.zombie)
 
@@ -537,22 +537,14 @@ class Grid:
         return json.dumps(grid_data)
 
     def machine_encode(self, turns_executed, action_taken, energy_remaining, game_score):
-        # Package up the "grid" object to be compatible with state space
-        # self.observation_space = spaces.Box(low=0, high=60, shape=(self.num_rows, self.num_cols), dtype='uint8')
-        # Create a numpy array with the right dtype filled with zeros and then add in the state values for each cell
-        machine_state = np.zeros((self.rows + 1, self.cols), dtype='uint8')
-        for r_ in range(self.rows):
-            for c_ in range(self.cols):
-                cell_val = self._get_machine_cell_value(r_, c_)
-                machine_state[r_, c_] = cell_val
-
-        # Add some status fields to the state in the last row
-        machine_state[self.rows, 0] = int(turns_executed)
-        machine_state[self.rows, 1] = int(action_taken[1])
-        machine_state[self.rows, 2] = int(energy_remaining)
-        machine_state[self.rows, 3] = int(game_score)
-
-        return machine_state
+        grid_data = dict()
+        grid_data['status'] = {
+            'turns_executed': turns_executed,
+            'action_taken': action_taken,
+            'energy_remaining': energy_remaining,
+            'game_score': game_score
+        }
+        return self.grid, grid_data
 
     def render(self, turns_executed, action_taken, energy_remaining, game_score, cell_size=30):
         # Print out the human encoding to standard out
