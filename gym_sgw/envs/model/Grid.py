@@ -554,7 +554,7 @@ class Grid:
 
         return machine_state
 
-    def human_render(self, turns_executed, action_taken, energy_remaining, game_score, cell_size=30):
+    def render(self, turns_executed, action_taken, energy_remaining, game_score, cell_size=30):
         # Print out the human encoding to standard out
         print('Turns Executed: {0} | Action: {1} | Energy Remaining: {2} | '
               'Score: {3} | Full State: {4}'.format(turns_executed, action_taken,
@@ -613,15 +613,6 @@ class Grid:
                     game_exit = True
             pg.display.update()
         pg.quit()
-
-    def machine_render(self, turns_executed, action_taken, energy_remaining, game_score):
-        # Render briefly for the machine (not likely to be seen, mainly for debugging)
-        # Print the raw machine encoding for debugging only
-        print('Turns Executed: {0} | Action: {1} | Energy Remaining: {2} | '
-              'Score: {3} | Full State: {4}'.format(turns_executed, action_taken,
-                                                    energy_remaining, game_score,
-                                                    self.machine_encode(turns_executed, action_taken,
-                                                                        energy_remaining, game_score)))
 
     @staticmethod
     def pp_info(turns_executed, action_taken, energy_remaining, game_score):
