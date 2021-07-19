@@ -27,7 +27,6 @@ class Grid:
         SYMBOL_INJURED = '*'
         #SYMBOL_ZOMBIE = 'Z'
         SYMBOL_BATTERY = '#'
-        SYMBOL_PEDESTRIAN = '@'
         SHEET_INDEX = 0
 
         # Open Excel file
@@ -115,8 +114,6 @@ class Grid:
                 #    grid_cell.add_map_object(MapObjects(3))
                 elif sheet_cell.value == SYMBOL_BATTERY:
                     grid_cell.add_map_object(MapObjects(4))
-                elif sheet_cell.value == SYMBOL_PEDESTRIAN:
-                    grid_cell.add_map_object(MapObjects(2))
 
                 # Add cell to grid[][]
                 grid_row.append(grid_cell)
@@ -162,7 +159,6 @@ class Grid:
             p_fire = 83
             #p_mud = 86
             p_injured = 89
-            p_pedestrian = 94
             #p_zombie = 99
             p_battery = 100
         elif mode == MapProfiles.sparse:
@@ -172,7 +168,6 @@ class Grid:
             p_fire = 83
             #p_mud = 86
             p_injured = 89
-            p_pedestrian = 94
             #p_zombie = 99
             p_battery = 100
         elif mode == MapProfiles.pacman:
@@ -182,7 +177,6 @@ class Grid:
             p_fire = 65
             #p_mud = 65
             p_injured = 65
-            p_pedestrian = 75
             #p_zombie = 95
             p_battery = 100
         elif mode == MapProfiles.spoiled:
@@ -192,7 +186,6 @@ class Grid:
             p_fire = 72
             #p_mud = 75
             p_injured = 95
-            p_pedestrian = 100
             #p_zombie = 100
             p_battery = 100
         elif mode == MapProfiles.twisty:
@@ -202,7 +195,6 @@ class Grid:
             p_fire = 90
             #p_mud = 91
             p_injured = 96
-            p_pedestrian = 96
             #p_zombie = 96
             p_battery = 100
         elif mode == MapProfiles.volcano:
@@ -212,7 +204,6 @@ class Grid:
             p_fire = 79
             #p_mud = 91
             p_injured = 96
-            p_pedestrian = 96
             #p_zombie = 96
             p_battery = 100
         else:  # Default to the uniform case
@@ -222,7 +213,6 @@ class Grid:
             p_fire = 45
             #p_mud = 56
             p_injured = 67
-            p_pedestrian = 78
             #p_zombie = 89
             p_battery = 100
 
@@ -255,8 +245,6 @@ class Grid:
                 #    grid[r_][c_].terrain = Terrains.mud
                 elif cell_roll < p_injured:
                     grid[r_][c_].add_map_object(MapObjects.injured)
-                elif cell_roll < p_pedestrian:
-                    grid[r_][c_].add_map_object(MapObjects.pedestrian)
                 #elif cell_roll < p_zombie:
                 #    grid[r_][c_].add_map_object(MapObjects.zombie)
                 elif cell_roll <= p_battery:
@@ -352,7 +340,6 @@ class Grid:
     def _get_score_of_action(self):
         # Default Reward Scheme
         RESCUE_REWARD = 9  # +9 per rescued victim (picked up one by one and delivered to hospital)
-        PED_PENALTY = -10  # -10 per squished pedestrian (or mobile pedestrian)
         VIC_PENALTY = -1  # -1 per squished victim (if you already have one onboard and enter it’s space, SQUISH)
         # FIRE_PENALTY = -5  # -5 per entry into fire (each entry; but otherwise it doesn’t actually hurt you)
         # ZOMBIE_REWARD = 2  # +2 per squished zombie (ZOMBIE DEATH!)
@@ -366,11 +353,6 @@ class Grid:
             if MapObjects.injured in end_cell.objects:
                 t_score += RESCUE_REWARD  # Deliver the injured
                 end_cell.remove_map_object(MapObjects.injured)  # Remove them from the board
-
-        # Add a penalty if you squished a pedestrian
-        if MapObjects.pedestrian in end_cell.objects:
-            t_score += PED_PENALTY  # Oh no, watch out!
-            end_cell.remove_map_object(MapObjects.pedestrian)
 
         # Add a penalty if you squish an injured person
         if end_cell.objects.count(MapObjects.injured) > 1:
@@ -444,8 +426,6 @@ class Grid:
             cell_val += 'B'
         if MapObjects.injured in cell.objects:
             cell_val += 'I'
-        if MapObjects.pedestrian in cell.objects:
-            cell_val += 'P'
         #if MapObjects.zombie in cell.objects:
         #    cell_val += 'Z'
 
@@ -465,7 +445,6 @@ class Grid:
         # The one's place is a map of the map object as follows:
         #     none = 0
         #     injured = 1
-        #     pedestrian = 2
         #     zombie = 3
         #     battery = 4
         #     player_up = 5
@@ -508,8 +487,6 @@ class Grid:
                 raise ValueError('Invalid player orientation while retrieving cell value for encoding/decoding')
         elif MapObjects.injured in cell.objects:
             cell_val += 1
-        elif MapObjects.pedestrian in cell.objects:
-            cell_val += 2
         elif MapObjects.battery in cell.objects:
             cell_val += 4
         #elif MapObjects.zombie in cell.objects:
