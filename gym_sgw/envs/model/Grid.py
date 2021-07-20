@@ -6,6 +6,7 @@ import numpy as np
 import pygame as pg
 from gym_sgw.envs.model.Cell import Cell
 from gym_sgw.envs.enums.Enums import MapObjects, Terrains, Actions, Orientations, MapProfiles, MapColors
+from gym_sgw.envs.model.Pedestrian import Pedestrian
 
 
 class Grid:
@@ -292,6 +293,10 @@ class Grid:
                 cell = self.grid[r_][c_]
                 if cell.terrain == Terrains.future_fire:
                     cell.terrain = Terrains.fire
+                # check for pedestrian at cells with fire terrain
+                elif cell.terrain == Terrains.fire:
+                    if bool(Pedestrian.exists([r_, c_])):
+                        Pedestrian.hurt([r_, c_])
 
     def predict_fire(self):
         # locate current cells w/ fire
@@ -399,6 +404,7 @@ class Grid:
         # if MapObjects.zombie in end_cell.objects:
         #    t_score += ZOMBIE_REWARD  # RUN IT OVER!
         #    end_cell.remove_map_object(MapObjects.zombie)
+
 
         return t_score
 
@@ -521,7 +527,7 @@ class Grid:
             cell_val += 1
         elif MapObjects.battery in cell.objects:
             cell_val += 4
-        #elif MapObjects.zombie in cell.objects:
+        # elif MapObjects.zombie in cell.objects:
         #    cell_val += 3
         elif MapObjects.none in cell.objects:
             cell_val += 0
