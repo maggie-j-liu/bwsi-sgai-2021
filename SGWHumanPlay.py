@@ -163,10 +163,6 @@ class SGW:
 
                             # Tick up turn
                             self.turn += 1
-                            if self.turn % 4 == 0:
-                                move_fire()
-                            elif self.turn % 2 == 0:
-                                predict_fire()
 
                             if self.is_game_over:
                                 game_exit = True
