@@ -11,7 +11,7 @@ class SGW:
     Human play game variant.
     """
     def __init__(self, data_log_file='data_log.json', max_energy=50, map_file=None,
-                 rand_prof=MapProfiles.trolley, num_rows=25, num_cols=25):
+                 rand_prof=MapProfiles.simple, num_rows=25, num_cols=25):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
         self.GAME_ID = uuid.uuid4()
