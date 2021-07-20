@@ -12,6 +12,7 @@ from gym_sgw.envs.model.Pedestrian import Pedestrian
 class Grid:
 
     def __init__(self, map_file: str = None, rows=25, cols=25, random_profile: MapProfiles = MapProfiles.simple):
+        self.ped_list = Pedestrian()
         self.map_file = map_file
         self.rows = rows
         self.cols = cols
@@ -253,14 +254,13 @@ class Grid:
                 #    grid[r_][c_].terrain = Terrains.mud
                 elif cell_roll < p_injured:
                     grid[r_][c_].add_map_object(MapObjects.injured)
-                    Pedestrian.add_ped([r_, c_])
+                    self.ped_list.add_ped(r_, c_)
                 #elif cell_roll < p_zombie:
                 #    grid[r_][c_].add_map_object(MapObjects.zombie)
                 elif cell_roll <= p_battery:
                     grid[r_][c_].add_map_object(MapObjects.battery)
                 else:
                     raise RuntimeError('Random cell value out of range?')
-
         return grid
 
     def do_turn(self, action: Actions):
@@ -296,8 +296,8 @@ class Grid:
                     cell.terrain = Terrains.fire
                 # check for pedestrian at cells with fire terrain
                 elif cell.terrain == Terrains.fire:
-                    if bool(Pedestrian.exists([r_, c_])):
-                        Pedestrian.hurt([r_, c_])
+                    if self.ped_list.exists((r_, c_)):
+                        self.ped_list.hurt((r_, c_))
 
     def predict_fire(self):
         # locate current cells w/ fire

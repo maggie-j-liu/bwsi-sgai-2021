@@ -1,10 +1,10 @@
 import json
-import uuid
+# import uuid
 import gym
 import gym_sgw  # Required, don't remove!
 import pygame as pg
 from gym_sgw.envs.enums.Enums import Actions, Terrains, PlayTypes, MapProfiles, MapColors
-
+import random
 
 class SGW:
     """
@@ -14,7 +14,7 @@ class SGW:
                  rand_prof=MapProfiles.simple, num_rows=25, num_cols=25):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
-        self.GAME_ID = uuid.uuid4()
+        self.GAME_ID = random.randint(0, 10000)  # uuid.uuid4()
         self.env = None
         self.current_action = Actions.none
         self.max_energy = max_energy
