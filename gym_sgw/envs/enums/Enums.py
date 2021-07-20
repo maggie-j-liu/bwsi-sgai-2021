@@ -6,7 +6,7 @@ class Terrains(IntEnum):
     out_of_bounds = 1
     wall = 2
     floor = 3
-    # mud = 4
+    future_fire = 4
     fire = 5
     hospital = 6
 
@@ -48,14 +48,13 @@ class MapProfiles(IntEnum):
     volcano = 6
     simple = 7
 
-
 class MapColors(Enum):
     play_area = '#000000'
     game_screen = '#6665adff'
     black_tile = '#000000'
     wall_tile = '#4b4b51ff'
     floor_tile = '#86868cff'
-    mud_tile = '#723415ff'
+    future_fire_tile = '#FFEC8B'
     fire_tile = '#bd4713ff'
     hospital_tile = '#8c2e3aff'
     text = '#ffffff'

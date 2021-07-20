@@ -67,8 +67,8 @@ class SGW:
                     cell_color = pg.color.Color(MapColors.wall_tile.value)
                 elif cell.terrain == Terrains.floor:
                     cell_color = pg.color.Color(MapColors.floor_tile.value)
-                # elif cell.terrain == Terrains.mud:
-                #    cell_color = pg.color.Color(MapColors.mud_tile.value)
+                elif cell.terrain == Terrains.future_fire:
+                    cell_color = pg.color.Color(MapColors.future_fire_tile.value)
                 elif cell.terrain == Terrains.fire:
                     cell_color = pg.color.Color(MapColors.fire_tile.value)
                 elif cell.terrain == Terrains.hospital:
@@ -163,10 +163,6 @@ class SGW:
 
                             # Tick up turn
                             self.turn += 1
-                            if self.turn % 4 == 0:
-                                move_fire()
-                            elif self.turn % 2 == 0:
-                                predict_fire()
 
                             if self.is_game_over:
                                 game_exit = True

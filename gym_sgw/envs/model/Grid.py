@@ -10,7 +10,7 @@ from gym_sgw.envs.enums.Enums import MapObjects, Terrains, Actions, Orientations
 
 class Grid:
 
-    def __init__(self, map_file: str = None, rows=25, cols=25, random_profile: MapProfiles = MapProfiles.uniform):
+    def __init__(self, map_file: str = None, rows=25, cols=25, random_profile: MapProfiles = MapProfiles.simple):
         self.map_file = map_file
         self.rows = rows
         self.cols = cols
@@ -207,11 +207,11 @@ class Grid:
             #p_zombie = 96
             p_battery = 100
         elif mode == MapProfiles.simple:
-            p_wall = 35
-            p_floor = 99
-            p_hospital = 99
-            p_fire = 99
-            p_injured = 100
+            p_wall = 5
+            p_floor = 50
+            p_hospital = 60
+            p_fire = 70
+            p_injured = 90
             p_battery = 100
         else:  # Default to the uniform case
             p_wall = 11
@@ -286,18 +286,29 @@ class Grid:
         return turn_score, energy_action, done
 
     def move_fire(self):
-        # locate predicted squares
-        # change square status to fire
-
-        pass
+        # Locate predicted squares & change to fire
+        for r_ in range(1, self.rows):
+            for c_ in range(1, self.cols):
+                cell = self.grid[r_][c_]
+                if cell.terrain == Terrains.future_fire:
+                    cell.terrain == Terrains.fire
 
     def predict_fire(self):
-        # locate current squares w/ fire
-        # get probability of fire spreading
-        # locate available neighboring squares
-        # change square status to future fire
-
-        pass
+        # locate current cells w/ fire
+        for r_ in range(1, self.rows):
+            for c_ in range(1, self.cols):
+                cell = self.grid[r_][c_]
+                if cell.terrain == Terrains.fire:
+                    # locate and save available adjacent cells
+                    free_cells= []
+                    for adjacent_cell in [self.grid[r_+1][c_], self.grid[r_][c_+1], 
+                                          self.grid[r_-1][c_], self.grid[r_][c_-1]]:
+                        if adjacent_cell.terrain == Terrains.floor:
+                            free_cells.append(adjacent_cell)
+                    # may need to use other random function for skewed spread
+                    if free_cells != []:
+                        next_cell = random.choice(free_cells)
+                        next_cell.terrain = Terrains.future_fire
 
     def _execute_step_forward(self):
 
@@ -485,8 +496,8 @@ class Grid:
             cell_val += 20
         elif cell.terrain == Terrains.floor:
             cell_val += 30
-        #elif cell.terrain == Terrains.mud:
-        #    cell_val += 40
+        elif cell.terrain == Terrains.future_fire:
+            cell_val += 40
         elif cell.terrain == Terrains.fire:
             cell_val += 50
         elif cell.terrain == Terrains.hospital:
@@ -575,8 +586,8 @@ class Grid:
                     cell_color = pg.color.Color(MapColors.wall_tile.value)
                 elif cell.terrain == Terrains.floor:
                     cell_color = pg.color.Color(MapColors.floor_tile.value)
-                #elif cell.terrain == Terrains.mud:
-                #    cell_color = pg.color.Color(MapColors.mud_tile.value)
+                elif cell.terrain == Terrains.future_fire:
+                    cell_color = pg.color.Color(MapColors.future_fire_tile.value)
                 elif cell.terrain == Terrains.fire:
                     cell_color = pg.color.Color(MapColors.fire_tile.value)
                 elif cell.terrain == Terrains.hospital:

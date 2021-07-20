@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     # Set runtime args
     data_log_file = args.outfile
-    map_file = 'gym_sgw/envs/maps/classic_trolley-ambiguous.xls'  # None -> random map, map files have top priority
+    map_file = None  # None -> random map, map files have top priority
     max_energy = 50
     rand_prof = MapProfiles.trolley
     num_rows = 25
