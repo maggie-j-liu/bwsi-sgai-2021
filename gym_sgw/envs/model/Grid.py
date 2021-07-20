@@ -291,7 +291,7 @@ class Grid:
             for c_ in range(1, self.cols):
                 cell = self.grid[r_][c_]
                 if cell.terrain == Terrains.future_fire:
-                    cell.terrain == Terrains.fire
+                    cell.terrain = Terrains.fire
 
     def predict_fire(self):
         # locate current cells w/ fire
