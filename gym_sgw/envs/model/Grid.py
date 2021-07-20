@@ -253,6 +253,7 @@ class Grid:
                 #    grid[r_][c_].terrain = Terrains.mud
                 elif cell_roll < p_injured:
                     grid[r_][c_].add_map_object(MapObjects.injured)
+                    Pedestrian.add_ped([r_, c_])
                 #elif cell_roll < p_zombie:
                 #    grid[r_][c_].add_map_object(MapObjects.zombie)
                 elif cell_roll <= p_battery:
