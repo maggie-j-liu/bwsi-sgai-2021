@@ -25,7 +25,6 @@ class Pedestrian:
 
     # take away one hp from pedestrian object (to be called when location of ped is on fire terrain)
     def hurt(self, x, y):
-        print("in hurt")
         location = (x, y)
         # check if pedestrian exists first
         if bool(self.exists(location)):
