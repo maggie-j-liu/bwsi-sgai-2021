@@ -161,7 +161,7 @@ class Grid:
             p_fire = 83
             # p_mud = 86
             p_injured = 89
-            #p_zombie = 99
+            # p_zombie = 99
             p_battery = 100
         elif mode == MapProfiles.sparse:
             p_wall = 20
@@ -170,7 +170,7 @@ class Grid:
             p_fire = 83
             # p_mud = 86
             p_injured = 89
-            #p_zombie = 99
+            # p_zombie = 99
             p_battery = 100
         elif mode == MapProfiles.pacman:
             p_wall = 35
@@ -179,7 +179,7 @@ class Grid:
             p_fire = 65
             # p_mud = 65
             p_injured = 65
-            #p_zombie = 95
+            # p_zombie = 95
             p_battery = 100
         elif mode == MapProfiles.spoiled:
             p_wall = 10
@@ -188,7 +188,7 @@ class Grid:
             p_fire = 72
             # p_mud = 75
             p_injured = 95
-            #p_zombie = 100
+            # p_zombie = 100
             p_battery = 100
         elif mode == MapProfiles.twisty:
             p_wall = 37
@@ -197,7 +197,7 @@ class Grid:
             p_fire = 90
             # p_mud = 91
             p_injured = 96
-            #p_zombie = 96
+            # p_zombie = 96
             p_battery = 100
         elif mode == MapProfiles.volcano:
             p_wall = 2
@@ -206,7 +206,7 @@ class Grid:
             p_fire = 79
             # p_mud = 91
             p_injured = 96
-            #p_zombie = 96
+            # p_zombie = 96
             p_battery = 100
         elif mode == MapProfiles.simple:
             p_wall = 5
@@ -222,7 +222,7 @@ class Grid:
             p_fire = 45
             # p_mud = 56
             p_injured = 67
-            #p_zombie = 89
+            # p_zombie = 89
             p_battery = 100
 
         # for each cell in the grid
@@ -255,7 +255,7 @@ class Grid:
                 elif cell_roll < p_injured:
                     grid[r_][c_].add_map_object(MapObjects.injured)
                     self.ped_list.add_ped(r_, c_)
-                #elif cell_roll < p_zombie:
+                # elif cell_roll < p_zombie:
                 #    grid[r_][c_].add_map_object(MapObjects.zombie)
                 elif cell_roll <= p_battery:
                     grid[r_][c_].add_map_object(MapObjects.battery)
@@ -291,12 +291,15 @@ class Grid:
     def burn_pedestrian(self):
         turn_score = 0
 
+        # find cells with fire
         for r_ in range(1, self.rows):
             for c_ in range(1, self.cols):
                 cell = self.grid[r_][c_]
                 if cell.terrain == Terrains.fire:
+                    # check if cells with fire also contain pedestrian object
                     if self.ped_list.exists(location=(r_, c_)):
                         self.ped_list.hurt(r_, c_)
+                        # check if pedestrian objects have run out of hp
                         if self.ped_list.get_hp((r_, c_)) <= 0:
                             self.ped_list.remove_ped(r_, c_)
                             cell.remove_map_object(MapObjects.injured)
@@ -424,10 +427,10 @@ class Grid:
     # calculate reward of things that aren't technically player actions
     # basically only for pedestrians dying in fire rn
     def _get_score_of_other(self):
-        BURN_PENALTY = -1
+        BURN_PENALTY = -1  # placeholder value; can change
         t_score = 0
 
-        t_score += BURN_PENALTY
+        t_score += BURN_PENALTY  # :(
 
         return t_score
 
@@ -436,7 +439,7 @@ class Grid:
         BAT_POWER = 20  # Battery = + 20 energy
         #MUD_DRAIN = -5  # Mud = 5 energy penalty
         BASE_ENERGY = -1  # All moves costs something
-        FIRE_DRAIN = -3
+        FIRE_DRAIN = -3  # placeholder value; can change
         t_energy = 0
 
         # Grab the cell where the player is (after the move)
