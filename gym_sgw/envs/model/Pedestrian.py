@@ -30,8 +30,6 @@ class Pedestrian:
         # check if pedestrian exists first
         if bool(self.exists(location)):
             self.objects[location] -= 1
-            print(location)
-            print(self.objects[location])
 
     # returns a pedestrian's hp level
     def get_hp(self, location=()):

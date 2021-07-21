@@ -59,8 +59,8 @@ class SGW(gym.Env):
         elif self.turns_executed % 2 == 0:
             self.grid.predict_fire()
 
-        # hurt pedestrians that are in fire
-        self.grid.burn_pedestrian()
+        # hurt pedestrians that are in fire and add score for any dead pedestrians
+        turn_score += self.grid.burn_pedestrian()
 
         # Update score and turn counters
         self.total_score += turn_score

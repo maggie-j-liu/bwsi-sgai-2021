@@ -289,6 +289,8 @@ class Grid:
 
     # take away hp from every pedestrian on fire terrain
     def burn_pedestrian(self):
+        turn_score = 0
+
         for r_ in range(1, self.rows):
             for c_ in range(1, self.cols):
                 cell = self.grid[r_][c_]
@@ -298,7 +300,9 @@ class Grid:
                         if self.ped_list.get_hp((r_, c_)) <= 0:
                             self.ped_list.remove_ped(r_, c_)
                             cell.remove_map_object(MapObjects.injured)
+                            turn_score += self._get_score_of_other()  # negative reward for pedestrian burn death
 
+        return turn_score
 
     def move_fire(self):
         # Locate predicted squares & change to fire
@@ -415,6 +419,15 @@ class Grid:
         #    t_score += ZOMBIE_REWARD  # RUN IT OVER!
         #    end_cell.remove_map_object(MapObjects.zombie)
 
+        return t_score
+
+    # calculate reward of things that aren't technically player actions
+    # basically only for pedestrians dying in fire rn
+    def _get_score_of_other(self):
+        BURN_PENALTY = -1
+        t_score = 0
+
+        t_score += BURN_PENALTY
 
         return t_score
 
@@ -435,7 +448,7 @@ class Grid:
             end_cell.remove_map_object(MapObjects.battery)
 
         # Drain energy if you hit mud (do not remove it from the board)
-        #if end_cell.terrain == Terrains.mud:
+        # if end_cell.terrain == Terrains.mud:
         #    t_energy += MUD_DRAIN  # wah wah
 
         # drain energy if you hit fire
