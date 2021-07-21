@@ -7,49 +7,61 @@ def choose_action(observation):
     # up, right, down, left
     di = [-1, 0, 1, 0]; dj = [0, 1, 0, -1]
     n = len(grid); m = len(grid[0])
-    dist = [[[1000000 for _ in range(4)] for _ in range(m)] for _ in range(n)]
+    # dist[i][j][k][l] -> at pos (i, j) with orientation k, l represents with person or not
+    dist = [[[[1000000 for _ in range(2)] for _ in range(4)] for _ in range(m)] for _ in range(n)]
     #prev_action_code = [[[Actions.none.value for _ in range(4)] for _ in range(m)] for _ in range(n)]
-    prev_action = [[[Actions.none for _ in range(4)] for _ in range(m)] for _ in range(n)]
+    prev_action = [[[[Actions.none for _ in range(2)] for _ in range(4)] for _ in range(m)] for _ in range(n)]
     q = []
     initiali = status['player_location'][0]
     initialj = status['player_location'][1]
     initialor = status['player_orientation'].value
     #heapq.heappush(q, (0, (initiali, initialj, initialor)))
-    dist[initiali][initialj][initialor] = 0
-
+    dist[initiali][initialj][initialor][1 if MapObjects.injured in grid[initiali][initialj].objects else 0] = 0
+    can_break = True
     # bellman ford - could be optimized but 😶
-    for _ in range(n):
+    for _ in range(n * m * 4 * 2):
         for i in range(n):
             for j in range(m):
                 if grid[i][j].terrain in [Terrains.none, Terrains.out_of_bounds, Terrains.wall]:
                     continue
                 for ori in range(4):
-                    # go forward
-                    nexti = i + di[ori]
-                    nextj = j + dj[ori]
-                    if grid[nexti][nextj].terrain not in [Terrains.none, Terrains.out_of_bounds, Terrains.wall]:
-                        if dist[i][j][ori] + 1 < dist[nexti][nextj][ori]:
-                            dist[nexti][nextj][ori] = dist[i][j][ori] + 1
-                            prev_action[nexti][nextj][ori] = Actions.step_forward
-                    # turn left or right
-                    for k in [-1, 1]:
-                        nextori = (ori + k + 4) % 4
-                        if dist[i][j][ori] + 1 < dist[i][j][nextori]:
-                            dist[i][j][nextori] = dist[i][j][ori] + 1
-                            prev_action[i][j][nextori] = Actions.turn_left if k == -1 else Actions.turn_right
-
+                    for has_person in range(2):
+                        # go forward
+                        nexti = i + di[ori]
+                        nextj = j + dj[ori]
+                        if grid[nexti][nextj].terrain not in [Terrains.none, Terrains.out_of_bounds, Terrains.wall]:
+                            next_has_person = 1 if MapObjects.injured in grid[nexti][nextj].objects or has_person else 0
+                            if dist[i][j][ori][has_person] + 1 < dist[nexti][nextj][ori][next_has_person]:
+                                dist[nexti][nextj][ori][next_has_person] = dist[i][j][ori][has_person] + 1
+                                prev_action[nexti][nextj][ori][next_has_person] = Actions.step_forward
+                                can_break = False
+                        # turn left or right
+                        for k in [-1, 1]:
+                            nextori = (ori + k + 4) % 4
+                            if dist[i][j][ori][has_person] + 1 < dist[i][j][nextori][has_person]:
+                                dist[i][j][nextori][has_person] = dist[i][j][ori][has_person] + 1
+                                prev_action[i][j][nextori][has_person] = Actions.turn_left if k == -1 else Actions.turn_right
+                                can_break = False
+        if can_break:
+            break
     besti, bestj, bestori, bestdist = 0, 0, 0, 1000000
     for i in range(n):
         for j in range(m):
-            if MapObjects.injured in grid[i][j].objects:
+            if Terrains.hospital == grid[i][j].terrain:
                 for ori in range(4):
-                    if dist[i][j][ori] < bestdist:
-                        bestdist = dist[i][j][ori]
+                    if dist[i][j][ori][1] < bestdist:
+                        bestdist = dist[i][j][ori][1]
                         besti = i; bestj = j; bestori = ori
     curri, currj, currori = besti, bestj, bestori
+    curr_has_person = 1
     last_action = None
+    seen_a_person = False
     while curri != initiali or currj != initialj or currori != initialor:
-        action_taken = prev_action[curri][currj][currori]
+        if MapObjects.injured in grid[curri][currj].objects:
+            seen_a_person = True
+        elif seen_a_person:
+            curr_has_person = 0
+        action_taken = prev_action[curri][currj][currori][curr_has_person]
         last_action = action_taken
         if action_taken == Actions.step_forward:
             curri -= di[currori]
@@ -59,6 +71,7 @@ def choose_action(observation):
         elif action_taken == Actions.turn_right:
             currori = (currori - 1 + 4) % 4
         else:
+            print(action_taken)
             raise RuntimeError('rip')
     return last_action
 

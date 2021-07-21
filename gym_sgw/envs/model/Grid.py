@@ -207,8 +207,8 @@ class Grid:
             #p_zombie = 96
             p_battery = 100
         elif mode == MapProfiles.simple:
-            p_wall = 35
-            p_floor = 99
+            p_wall = 15
+            p_floor = 80
             p_hospital = 99
             p_fire = 99
             p_injured = 100
