@@ -4,10 +4,11 @@ from gym_sgw.envs.model.Cell import Cell
 class Pedestrian:
 
     def __init__(self):
-        # create dictionary of all pedestrians based on location (location:hp)
+        # create dictionary of all pedestrians based on location -- {location:hp}
         self.objects = {}
         self.hp = 5
 
+    # create a new pedestrian in object dictionary
     def add_ped(self, x, y):
         location = (x, y)
         self.objects[location] = self.hp
@@ -26,12 +27,13 @@ class Pedestrian:
     def hurt(self, x, y):
         print("in hurt")
         location = (x, y)
+        # check if pedestrian exists first
         if bool(self.exists(location)):
             self.objects[location] -= 1
             print(location)
             print(self.objects[location])
 
-    # returns pedestrian object's hp
+    # returns a pedestrian's hp level
     def get_hp(self, location=()):
         if bool(self.exists(location)):
             return self.objects[location]
