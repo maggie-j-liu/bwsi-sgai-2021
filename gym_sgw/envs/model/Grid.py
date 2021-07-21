@@ -287,6 +287,19 @@ class Grid:
 
         return turn_score, energy_action, done
 
+    # take away hp from every pedestrian on fire terrain
+    def burn_pedestrian(self):
+        for r_ in range(1, self.rows):
+            for c_ in range(1, self.cols):
+                cell = self.grid[r_][c_]
+                if cell.terrain == Terrains.fire:
+                    if self.ped_list.exists(location=(r_, c_)):
+                        self.ped_list.hurt(r_, c_)
+                        if self.ped_list.get_hp((r_, c_)) <= 0:
+                            self.ped_list.remove_ped(r_, c_)
+                            cell.remove_map_object(MapObjects.injured)
+
+
     def move_fire(self):
         # Locate predicted squares & change to fire
         for r_ in range(1, self.rows):
@@ -294,10 +307,6 @@ class Grid:
                 cell = self.grid[r_][c_]
                 if cell.terrain == Terrains.future_fire:
                     cell.terrain = Terrains.fire
-                # check for pedestrian at cells with fire terrain
-                elif cell.terrain == Terrains.fire:
-                    if self.ped_list.exists((r_, c_)):
-                        self.ped_list.hurt((r_, c_))
 
     def predict_fire(self):
         # locate current cells w/ fire
