@@ -6,6 +6,7 @@ import numpy as np
 import pygame as pg
 from gym_sgw.envs.model.Cell import Cell
 from gym_sgw.envs.enums.Enums import MapObjects, Terrains, Actions, Orientations, MapProfiles, MapColors
+from gym_sgw.envs.model.Constants import BASE_ENERGY, BAT_POWER, FIRE_DRAIN
 
 
 class Grid:
@@ -393,10 +394,10 @@ class Grid:
 
     def _get_energy_of_action(self):
         # Default energy scheme
-        BAT_POWER = 20  # Battery = + 20 energy
+        #BAT_POWER = 20  # Battery = + 20 energy
         #MUD_DRAIN = -5  # Mud = 5 energy penalty
-        BASE_ENERGY = -1  # All moves costs something
-        FIRE_DRAIN = -3
+        #BASE_ENERGY = -1  # All moves costs something
+        #FIRE_DRAIN = -3
         t_energy = 0
 
         # Grab the cell where the player is (after the move)
