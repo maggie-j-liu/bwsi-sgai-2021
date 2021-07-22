@@ -47,12 +47,14 @@ def choose_action(observation):
             next_has_person = 1 if MapObjects.injured in grid[nexti][nextj].objects or has_person else 0
             next_has_fire = 1 if Terrains.fire == grid[nexti][nextj].terrain else 0
             next_has_bat = 1 if MapObjects.battery in grid[nexti][nextj].objects else 0
-            total_cost = BASE_ENERGY + next_has_bat * BAT_POWER + next_has_fire * FIRE_DRAIN
+            total_cost = BASE_ENERGY + next_has_bat * BAT_POWER + next_has_fire * FIRE_DRAIN + (5 if MapObjects.injured in grid[nexti][nextj].objects else -5)
             if distance - total_cost < dist[nexti][nextj][ori][next_has_person]:
                 dist[nexti][nextj][ori][next_has_person] = distance - total_cost
                 newgrid = copy.deepcopy(grid)
                 if next_has_bat:
                     newgrid[nexti][nextj].objects.remove(MapObjects.battery)
+                if MapObjects.injured in grid[nexti][nextj].objects:
+                    newgrid[nexti][nextj].objects.remove(MapObjects.injured)
                 heapq.heappush(pq, (distance - total_cost, (nexti, nextj, ori, next_has_person), act if act != Actions.none else Actions.step_forward, newgrid))
                 #prev_action[nexti][nextj][ori][next_has_person] = Actions.step_forward
         # turn right or left

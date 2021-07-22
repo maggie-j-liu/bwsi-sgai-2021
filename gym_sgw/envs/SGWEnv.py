@@ -61,7 +61,7 @@ class SGW(gym.Env):
 
         # Update score and turn counters
         self.total_score += turn_score
-        self.energy_used += turn_energy
+        self.energy_used -= turn_energy
 
         # Check if done
         if is_done or (abs(self.energy_used) >= self.max_energy):
