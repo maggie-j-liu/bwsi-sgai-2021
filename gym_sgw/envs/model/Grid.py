@@ -210,9 +210,9 @@ class Grid:
         elif mode == MapProfiles.simple:
             p_wall = 15
             p_floor = 80
-            p_hospital = 99
-            p_fire = 99
-            p_injured = 100
+            p_hospital = 90
+            p_fire = 92
+            p_injured = 96
             p_battery = 100
         else:  # Default to the uniform case
             p_wall = 11
