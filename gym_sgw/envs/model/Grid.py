@@ -13,6 +13,7 @@ class Grid:
 
     def __init__(self, map_file: str = None, rows=25, cols=25, random_profile: MapProfiles = MapProfiles.simple):
         self.ped_list = Pedestrian()
+        self.concentration = random.randint(0, 3)
         self.map_file = map_file
         self.rows = rows
         self.cols = cols
@@ -21,7 +22,6 @@ class Grid:
         self.player_location = None
         self.grid = self.read_in_map() if map_file is not None else self.random_grid()
         self.map_max_energy = None
-        self.concentration = random.randint(0, 3)
 
     def read_in_map(self):
 
@@ -218,10 +218,10 @@ class Grid:
             p_battery = 100
         elif mode == MapProfiles.concentrated:
             p_wall = 5
-            p_floor = 60
-            p_hospital = 70
+            p_floor = 50
+            p_hospital = 60
             p_fire = 80
-            p_injured = 95
+            p_injured = 90
             p_battery = 100
         else:  # Default to the uniform case
             p_wall = 11
@@ -249,7 +249,6 @@ class Grid:
                     continue
 
                 if mode == MapProfiles.concentrated:
-                    print('here', self.concentration)
                     r_border, c_border = self._get_fire_borders(grid)
 
                 # Get a random int between 1 and 100, note these bounds are both inclusive
@@ -288,10 +287,9 @@ class Grid:
             r_border, c_border = self.rows//5 + 1, self.cols - (self.cols//5) - 1
         elif self.concentration == Concentrations.bottom_right:
             r_border, c_border = self.rows - (self.rows//5) - 1, self.cols - (self.cols//5) - 1
-        print(r_border, c_border, self.concentration)
         return r_border, c_border
 
-    def _fill_concentrations(self, grid, r_border, c_border, r_, c_):
+    def _fill_concentrations(self, grid, r_border, c_border, r_, c_, fire=True):
         # fills fire and hospital squares for concentrations
         if self.concentration == Concentrations.upper_left and r_ < r_border and c_ < c_border:
             grid[r_][c_].terrain = Terrains.fire
