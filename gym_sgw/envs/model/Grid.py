@@ -5,7 +5,7 @@ from typing import List
 import numpy as np
 import pygame as pg
 from gym_sgw.envs.model.Cell import Cell
-from gym_sgw.envs.enums.Enums import MapObjects, Terrains, Actions, Orientations, MapProfiles, MapColors
+from gym_sgw.envs.enums.Enums import MapObjects, Terrains, Actions, Orientations, MapProfiles, MapColors, Concentrations
 from gym_sgw.envs.model.Pedestrian import Pedestrian
 
 
@@ -21,6 +21,7 @@ class Grid:
         self.player_location = None
         self.grid = self.read_in_map() if map_file is not None else self.random_grid()
         self.map_max_energy = None
+        self.concentration = random.randint(0, 3)
 
     def read_in_map(self):
 
@@ -215,6 +216,13 @@ class Grid:
             p_fire = 70
             p_injured = 90
             p_battery = 100
+        elif mode == MapProfiles.concentrated:
+            p_wall = 5
+            p_floor = 60
+            p_hospital = 70
+            p_fire = 80
+            p_injured = 95
+            p_battery = 100
         else:  # Default to the uniform case
             p_wall = 11
             p_floor = 23
@@ -240,6 +248,10 @@ class Grid:
                 if curr_cell.terrain is Terrains.out_of_bounds:
                     continue
 
+                if mode == MapProfiles.concentrated:
+                    print('here', self.concentration)
+                    r_border, c_border = self._get_fire_borders(grid)
+
                 # Get a random int between 1 and 100, note these bounds are both inclusive
                 cell_roll = random.randint(1, 100)  # We could use a random continuous value if we wanted too!
                 if cell_roll < p_wall:
@@ -249,7 +261,10 @@ class Grid:
                 elif cell_roll < p_hospital:
                     grid[r_][c_].terrain = Terrains.hospital
                 elif cell_roll < p_fire:
-                    grid[r_][c_].terrain = Terrains.fire
+                    if mode == MapProfiles.concentrated:
+                        self._fill_concentrations(grid, r_border, c_border, r_, c_)
+                    else:
+                        grid[r_][c_].terrain = Terrains.fire
                 # elif cell_roll < p_mud:
                 #    grid[r_][c_].terrain = Terrains.mud
                 elif cell_roll < p_injured:
@@ -262,6 +277,30 @@ class Grid:
                 else:
                     raise RuntimeError('Random cell value out of range?')
         return grid
+
+    def _get_fire_borders(self, grid):
+        # returns the row and column borders for concentrated fire
+        if self.concentration == Concentrations.upper_left:
+            r_border, c_border = self.rows//5 + 1, self.cols//5 + 1
+        elif self.concentration == Concentrations.bottom_left:
+            r_border, c_border = self.rows - (self.rows//5) - 1, self.cols//5 + 1
+        elif self.concentration == Concentrations.upper_right:
+            r_border, c_border = self.rows//5 + 1, self.cols - (self.cols//5) - 1
+        elif self.concentration == Concentrations.bottom_right:
+            r_border, c_border = self.rows - (self.rows//5) - 1, self.cols - (self.cols//5) - 1
+        print(r_border, c_border, self.concentration)
+        return r_border, c_border
+
+    def _fill_concentrations(self, grid, r_border, c_border, r_, c_):
+        # fills fire and hospital squares for concentrations
+        if self.concentration == Concentrations.upper_left and r_ < r_border and c_ < c_border:
+            grid[r_][c_].terrain = Terrains.fire
+        elif self.concentration == Concentrations.bottom_left and r_ > r_border and c_ < c_border:
+            grid[r_][c_].terrain = Terrains.fire
+        elif self.concentration == Concentrations.upper_right and r_ < r_border and c_ > c_border:
+            grid[r_][c_].terrain = Terrains.fire
+        elif self.concentration == Concentrations.bottom_right and r_ > r_border and c_ > c_border:
+            grid[r_][c_].terrain = Terrains.fire
 
     def do_turn(self, action: Actions):
 

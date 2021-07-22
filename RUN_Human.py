@@ -27,7 +27,7 @@ if __name__ == '__main__':
     data_log_file = args.outfile
     map_file = None  # None -> random map, map files have top priority
     max_energy = 50
-    rand_prof = MapProfiles.simple
+    rand_prof = MapProfiles.concentrated
     num_rows = 20
     num_cols = 20
 

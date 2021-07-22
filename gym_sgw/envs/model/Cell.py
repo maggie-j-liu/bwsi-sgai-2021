@@ -14,7 +14,8 @@ class Cell:
         # If there's an error on the following line, the most likely error is due to the player
         # object being removed when trying to step forward and the player isn't really there.
         # What would you do to protect against this?
-        self.objects.remove(obj)
+        if obj  in self.objects:
+            self.objects.remove(obj)
 
     def get_data(self):
         meta_data = {
