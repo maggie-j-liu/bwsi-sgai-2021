@@ -67,14 +67,14 @@ class SGW(gym.Env):
         self.energy_used -= turn_energy
 
         # Check if done
-        if is_done or (abs(self.energy_used) >= self.max_energy):
+        if is_done or (self.energy_used >= self.max_energy):
             self.is_game_over = True
 
         # Report out basic information for step
         obs = self.get_obs()
         info = {'turn_reward': turn_score, 'total_reward': self.total_score,
-                'turn_energy_used': turn_energy, 'total_energy_used': self.energy_used,
-                'total_energy_remaining': self.max_energy + self.energy_used}
+                'turn_energy_used': -turn_energy, 'total_energy_used': self.energy_used,
+                'total_energy_remaining': self.max_energy - self.energy_used}
 
         return obs, self.total_score, self.is_game_over, info
 
@@ -86,12 +86,12 @@ class SGW(gym.Env):
         if self.play_type == PlayTypes.human:
             return self.grid.human_encode(turns_executed=self.turns_executed,
                                           action_taken=self.latest_action,
-                                          energy_remaining=(self.max_energy + self.energy_used),
+                                          energy_remaining=(self.max_energy - self.energy_used),
                                           game_score=self.total_score)
         elif self.play_type == PlayTypes.machine:
             return self.grid.machine_encode(turns_executed=self.turns_executed,
                                             action_taken=self.latest_action,
-                                            energy_remaining=(self.max_energy + self.energy_used),
+                                            energy_remaining=(self.max_energy - self.energy_used),
                                             game_score=self.total_score)
         else:
             raise ValueError('Failed to find acceptable play type.')
@@ -99,13 +99,12 @@ class SGW(gym.Env):
     def render(self):
         return self.grid.render(turns_executed=self.turns_executed,
                                     action_taken=self.latest_action,
-                                    energy_remaining=(self.max_energy + self.energy_used),
+                                    energy_remaining=(self.max_energy - self.energy_used),
                                     game_score=self.total_score, cell_size=30)
-
     def pp_info(self):
         self.grid.pp_info(turns_executed=self.turns_executed,
                           action_taken=self.latest_action,
-                          energy_remaining=(self.max_energy + self.energy_used),
+                          energy_remaining=(self.max_energy - self.energy_used),
                           game_score=self.total_score)
 
     @staticmethod
