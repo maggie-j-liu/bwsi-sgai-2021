@@ -366,6 +366,7 @@ class Grid:
         if MapObjects.injured in curr_cell.objects:
             curr_cell.remove_map_object(MapObjects.injured)
             next_cell.add_map_object(MapObjects.injured)
+            self.ped_list.remove_ped(curr_pos[0], curr_pos[1])
 
     def _execute_turn_left(self):
         if self.player_orientation == Orientations.right:
@@ -490,7 +491,7 @@ class Grid:
             cell_val += 'B'
         if MapObjects.injured in cell.objects:
             cell_val += 'I'
-        #if MapObjects.zombie in cell.objects:
+        # if MapObjects.zombie in cell.objects:
         #    cell_val += 'Z'
 
         return cell_val
