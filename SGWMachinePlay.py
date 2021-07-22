@@ -12,7 +12,7 @@ class SGW:
     Machine play game variant using a pathfinding algorithm.
     """
     def __init__(self, data_log_file='data_log.json', max_energy=50, map_file=None,
-                 rand_prof=MapProfiles.trolley, num_rows=25, num_cols=25):
+                 rand_prof=MapProfiles.simple, num_rows=25, num_cols=25):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
         self.GAME_ID = uuid.uuid4()
@@ -69,8 +69,8 @@ class SGW:
                     cell_color = pg.color.Color(MapColors.wall_tile.value)
                 elif cell.terrain == Terrains.floor:
                     cell_color = pg.color.Color(MapColors.floor_tile.value)
-                # elif cell.terrain == Terrains.mud:
-                #    cell_color = pg.color.Color(MapColors.mud_tile.value)
+                elif cell.terrain == Terrains.future_fire:
+                    cell_color = pg.color.Color(MapColors.future_fire_tile.value)
                 elif cell.terrain == Terrains.fire:
                     cell_color = pg.color.Color(MapColors.fire_tile.value)
                 elif cell.terrain == Terrains.hospital:

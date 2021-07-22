@@ -7,11 +7,13 @@ import pygame as pg
 from gym_sgw.envs.model.Cell import Cell
 from gym_sgw.envs.enums.Enums import MapObjects, Terrains, Actions, Orientations, MapProfiles, MapColors
 from gym_sgw.envs.model.Constants import BASE_ENERGY, BAT_POWER, FIRE_DRAIN
+from gym_sgw.envs.model.Pedestrian import Pedestrian
 
 
 class Grid:
 
-    def __init__(self, map_file: str = None, rows=25, cols=25, random_profile: MapProfiles = MapProfiles.uniform):
+    def __init__(self, map_file: str = None, rows=25, cols=25, random_profile: MapProfiles = MapProfiles.simple):
+        self.ped_list = Pedestrian()
         self.map_file = map_file
         self.rows = rows
         self.cols = cols
@@ -160,7 +162,7 @@ class Grid:
             p_fire = 83
             # p_mud = 86
             p_injured = 89
-            #p_zombie = 99
+            # p_zombie = 99
             p_battery = 100
         elif mode == MapProfiles.sparse:
             p_wall = 20
@@ -169,7 +171,7 @@ class Grid:
             p_fire = 83
             # p_mud = 86
             p_injured = 89
-            #p_zombie = 99
+            # p_zombie = 99
             p_battery = 100
         elif mode == MapProfiles.pacman:
             p_wall = 35
@@ -178,7 +180,7 @@ class Grid:
             p_fire = 65
             # p_mud = 65
             p_injured = 65
-            #p_zombie = 95
+            # p_zombie = 95
             p_battery = 100
         elif mode == MapProfiles.spoiled:
             p_wall = 10
@@ -187,7 +189,7 @@ class Grid:
             p_fire = 72
             # p_mud = 75
             p_injured = 95
-            #p_zombie = 100
+            # p_zombie = 100
             p_battery = 100
         elif mode == MapProfiles.twisty:
             p_wall = 37
@@ -196,7 +198,7 @@ class Grid:
             p_fire = 90
             # p_mud = 91
             p_injured = 96
-            #p_zombie = 96
+            # p_zombie = 96
             p_battery = 100
         elif mode == MapProfiles.volcano:
             p_wall = 2
@@ -205,7 +207,7 @@ class Grid:
             p_fire = 79
             # p_mud = 91
             p_injured = 96
-            #p_zombie = 96
+            # p_zombie = 96
             p_battery = 100
         elif mode == MapProfiles.simple:
             p_wall = 15
@@ -221,7 +223,7 @@ class Grid:
             p_fire = 45
             # p_mud = 56
             p_injured = 67
-            #p_zombie = 89
+            # p_zombie = 89
             p_battery = 100
 
         # for each cell in the grid
@@ -253,13 +255,13 @@ class Grid:
                 #    grid[r_][c_].terrain = Terrains.mud
                 elif cell_roll < p_injured:
                     grid[r_][c_].add_map_object(MapObjects.injured)
-                #elif cell_roll < p_zombie:
+                    self.ped_list.add_ped(r_, c_)
+                # elif cell_roll < p_zombie:
                 #    grid[r_][c_].add_map_object(MapObjects.zombie)
                 elif cell_roll <= p_battery:
                     grid[r_][c_].add_map_object(MapObjects.battery)
                 else:
                     raise RuntimeError('Random cell value out of range?')
-
         return grid
 
     def do_turn(self, action: Actions):
@@ -286,19 +288,50 @@ class Grid:
 
         return turn_score, energy_action, done
 
-    def move_fire(self):
-        # locate predicted squares
-        # change square status to fire
+    # take away hp from every pedestrian on fire terrain
+    def burn_pedestrian(self):
+        turn_score = 0
 
-        pass
+        # find cells with fire
+        for r_ in range(1, self.rows):
+            for c_ in range(1, self.cols):
+                cell = self.grid[r_][c_]
+                if cell.terrain == Terrains.fire:
+                    # check if cells with fire also contain pedestrian object
+                    if self.ped_list.exists(location=(r_, c_)):
+                        self.ped_list.hurt(r_, c_)
+                        # check if pedestrian objects have run out of hp
+                        if self.ped_list.get_hp((r_, c_)) <= 0:
+                            self.ped_list.remove_ped(r_, c_)
+                            cell.remove_map_object(MapObjects.injured)
+                            turn_score += self._get_score_of_other()  # negative reward for pedestrian burn death
+
+        return turn_score
+
+    def move_fire(self):
+        # Locate predicted squares & change to fire
+        for r_ in range(1, self.rows):
+            for c_ in range(1, self.cols):
+                cell = self.grid[r_][c_]
+                if cell.terrain == Terrains.future_fire:
+                    cell.terrain = Terrains.fire
 
     def predict_fire(self):
-        # locate current squares w/ fire
-        # get probability of fire spreading
-        # locate available neighboring squares
-        # change square status to future fire
-
-        pass
+        # locate current cells w/ fire
+        for r_ in range(1, self.rows):
+            for c_ in range(1, self.cols):
+                cell = self.grid[r_][c_]
+                if cell.terrain == Terrains.fire:
+                    # locate and save available adjacent cells
+                    free_cells= []
+                    for adjacent_cell in [self.grid[r_+1][c_], self.grid[r_][c_+1], 
+                                          self.grid[r_-1][c_], self.grid[r_][c_-1]]:
+                        if adjacent_cell.terrain == Terrains.floor:
+                            free_cells.append(adjacent_cell)
+                    # may need to use other random function for skewed spread
+                    if free_cells != []:
+                        next_cell = random.choice(free_cells)
+                        next_cell.terrain = Terrains.future_fire
 
     def _execute_step_forward(self):
 
@@ -334,6 +367,7 @@ class Grid:
         if MapObjects.injured in curr_cell.objects:
             curr_cell.remove_map_object(MapObjects.injured)
             next_cell.add_map_object(MapObjects.injured)
+            self.ped_list.remove_ped(curr_pos[0], curr_pos[1])
 
     def _execute_turn_left(self):
         if self.player_orientation == Orientations.right:
@@ -392,6 +426,16 @@ class Grid:
 
         return t_score
 
+    # calculate reward of things that aren't technically player actions
+    # basically only for pedestrians dying in fire rn
+    def _get_score_of_other(self):
+        BURN_PENALTY = -1  # placeholder value; can change
+        t_score = 0
+
+        t_score += BURN_PENALTY  # :(
+
+        return t_score
+
     def _get_energy_of_action(self):
         # Default energy scheme
         #BAT_POWER = 20  # Battery = + 20 energy
@@ -409,7 +453,7 @@ class Grid:
             end_cell.remove_map_object(MapObjects.battery)
 
         # Drain energy if you hit mud (do not remove it from the board)
-        #if end_cell.terrain == Terrains.mud:
+        # if end_cell.terrain == Terrains.mud:
         #    t_energy += MUD_DRAIN  # wah wah
 
         # drain energy if you hit fire
@@ -448,7 +492,7 @@ class Grid:
             cell_val += 'B'
         if MapObjects.injured in cell.objects:
             cell_val += 'I'
-        #if MapObjects.zombie in cell.objects:
+        # if MapObjects.zombie in cell.objects:
         #    cell_val += 'Z'
 
         return cell_val
@@ -486,8 +530,8 @@ class Grid:
             cell_val += 20
         elif cell.terrain == Terrains.floor:
             cell_val += 30
-        #elif cell.terrain == Terrains.mud:
-        #    cell_val += 40
+        elif cell.terrain == Terrains.future_fire:
+            cell_val += 40
         elif cell.terrain == Terrains.fire:
             cell_val += 50
         elif cell.terrain == Terrains.hospital:
@@ -511,7 +555,7 @@ class Grid:
             cell_val += 1
         elif MapObjects.battery in cell.objects:
             cell_val += 4
-        #elif MapObjects.zombie in cell.objects:
+        # elif MapObjects.zombie in cell.objects:
         #    cell_val += 3
         elif MapObjects.none in cell.objects:
             cell_val += 0
@@ -576,8 +620,8 @@ class Grid:
                     cell_color = pg.color.Color(MapColors.wall_tile.value)
                 elif cell.terrain == Terrains.floor:
                     cell_color = pg.color.Color(MapColors.floor_tile.value)
-                #elif cell.terrain == Terrains.mud:
-                #    cell_color = pg.color.Color(MapColors.mud_tile.value)
+                elif cell.terrain == Terrains.future_fire:
+                    cell_color = pg.color.Color(MapColors.future_fire_tile.value)
                 elif cell.terrain == Terrains.fire:
                     cell_color = pg.color.Color(MapColors.fire_tile.value)
                 elif cell.terrain == Terrains.hospital:
