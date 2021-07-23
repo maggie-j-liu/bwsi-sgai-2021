@@ -160,6 +160,14 @@ class SGW:
                             self.env.pp_info()
                             self.is_game_over = done
 
+                            observation = list(observation)
+                            grid = dict()
+                            for r_ in range(self.num_rows):
+                                for c_ in range(self.num_cols):
+                                    grid[f'{r_}, {c_}'] = observation[0][r_][c_].get_data()
+                            observation[0] = json.dumps(grid)
+                            observation = tuple(observation)
+
                             # Write action and stuff out to disk.
                             data_to_log = {
                                 'game_id': str(self.GAME_ID),
