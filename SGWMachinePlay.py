@@ -94,7 +94,7 @@ class SGW:
                                                 (r_ * self.cell_size) + self.cell_size // 2))
         pg.display.update()
 
-    def run(self):
+    async def run(self):
 
         print('Starting new game with machine play!')
         # Set up pygame loop for game, capture actions, and redraw the screen on action
