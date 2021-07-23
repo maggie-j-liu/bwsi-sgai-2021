@@ -12,7 +12,7 @@ class SGW:
     Machine play game variant using a pathfinding algorithm.
     """
     def __init__(self, data_log_file='data_log.json', max_energy=50, map_file=None,
-                 rand_prof=MapProfiles.trolley, num_rows=25, num_cols=25):
+                 rand_prof=MapProfiles.trolley, num_rows=25, num_cols=25, manual=False):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
         self.GAME_ID = uuid.uuid4()
@@ -30,6 +30,7 @@ class SGW:
         self.game_screen = None
         self.play_area = None
         self.latest_obs = None
+        self.manual = manual
 
         # Always do these actions upon start
         self._setup()
@@ -97,6 +98,7 @@ class SGW:
     async def run(self):
 
         print('Starting new game with machine play!')
+        print(f'Mode: {"Manual" if self.manual else "Automatic"}')
         # Set up pygame loop for game, capture actions, and redraw the screen on action
         self.latest_obs = self.env.reset()
         pg.init()
@@ -108,6 +110,10 @@ class SGW:
         self._draw_screen()
 
         # Main game loop, capture window events, actions, and redraw the screen with updates until game over
+        MOVE_EVENT = pg.USEREVENT + 1
+        move = pg.event.Event(MOVE_EVENT)
+        if not self.manual:
+            pg.event.post(move)
         game_exit = False
         while not game_exit:
             for event in pg.event.get():
@@ -123,12 +129,16 @@ class SGW:
                     # Catch a common key stroke to advance to next machine turn
                     keep_playing = False
                     action = None
-                    if event.type == pg.KEYDOWN:
-                        if event.key == pg.K_ESCAPE:
-                            game_exit = True
-                            self.done()
-                        if event.key in [pg.K_SPACE, pg.K_KP_ENTER, pg.K_UP, pg.K_DOWN, pg.K_LEFT, pg.K_RIGHT,
-                                         pg.K_w, pg.K_a, pg.K_s, pg.K_d, pg.K_0, pg.K_1, pg.K_2, pg.K_3]:
+                    if self.manual:
+                        if event.type == pg.KEYDOWN:
+                            if event.key == pg.K_ESCAPE:
+                                game_exit = True
+                                self.done()
+                            if event.key in [pg.K_SPACE, pg.K_KP_ENTER, pg.K_UP, pg.K_DOWN, pg.K_LEFT, pg.K_RIGHT,
+                                             pg.K_w, pg.K_a, pg.K_s, pg.K_d, pg.K_0, pg.K_1, pg.K_2, pg.K_3]:
+                                keep_playing = True
+                    else:
+                        if event.type == MOVE_EVENT:
                             keep_playing = True
 
                     if keep_playing:
@@ -174,6 +184,8 @@ class SGW:
                             # Draw the screen
                             if not self.is_game_over:
                                 self._draw_screen()
+                                if not self.manual:
+                                    pg.event.post(move)
 
                 else:
                     # Else end the game
