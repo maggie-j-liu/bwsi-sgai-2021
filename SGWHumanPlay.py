@@ -4,6 +4,8 @@ import gym
 import gym_sgw  # Required, don't remove!
 import pygame as pg
 from gym_sgw.envs.enums.Enums import Actions, Terrains, PlayTypes, MapProfiles, MapColors
+from gym_sgw.envs.model.Start import Start
+from gym_sgw.envs.model.End import End
 import random
 
 class SGW:
@@ -28,9 +30,17 @@ class SGW:
         self.cell_size = 30
         self.game_screen = None
         self.play_area = None
+        self.start_menu = None
+        self.end_menu = None
 
         # Always do these actions upon start
         self._setup()
+
+    def start(self):
+        self.start_menu = Start.make()
+
+    def end(self):
+        self.start_menu = End.make()
 
     def _setup(self):
         # Game parameters
