@@ -22,6 +22,7 @@ class Grid:
         self.player_location = None
         self.grid = self.read_in_map() if map_file is not None else self.random_grid()
         self.map_max_energy = None
+        self.initial_peds = self.ped_list.get_num_peds()
 
     def read_in_map(self):
 
@@ -369,6 +370,10 @@ class Grid:
                         next_cell = random.choice(free_cells)
                         next_cell.terrain = Terrains.future_fire
 
+    def get_percent_saved(self):
+        percent = 1 - self.ped_list.get_num_peds()/self.initial_peds
+        return (round(percent, 2))*100
+
     def _execute_step_forward(self):
 
         # Get the next position based on orientation
@@ -611,7 +616,8 @@ class Grid:
             'turns_executed': turns_executed,
             'action_taken': action_taken,
             'energy_remaining': energy_remaining,
-            'game_score': game_score
+            'game_score': game_score,
+            'percent_saved': self.get_percent_saved()
         }
         return json.dumps(grid_data)
 
@@ -622,7 +628,8 @@ class Grid:
             'energy_remaining': energy_remaining,
             'game_score': game_score,
             'player_location': self.player_location,
-            'player_orientation': self.player_orientation
+            'player_orientation': self.player_orientation,
+            'percent_saved': self.get_percent_saved()
         }
         return self.grid, grid_data
 
@@ -687,9 +694,10 @@ class Grid:
         pg.quit()
 
     @staticmethod
-    def pp_info(turns_executed, action_taken, energy_remaining, game_score):
+    def pp_info(turns_executed, action_taken, energy_remaining, game_score, percent_saved):
         print('Turns Executed: {0} | Action: {1} | Energy Remaining: {2} | '
-              'Score: {3}'.format(turns_executed, action_taken, energy_remaining, game_score))
+              'Score: {3} | Percent Saved: {4}'.format(turns_executed, action_taken, energy_remaining, 
+                                                       game_score, percent_saved))
 
 
 if __name__ == '__main__':

@@ -38,3 +38,7 @@ class Pedestrian:
     # check if pedestrian exists at given location
     def exists(self, location=()):
         return bool(location in self.objects)
+
+    # returns the number of pedestrians remaining
+    def get_num_peds(self):
+        return len(self.objects)
