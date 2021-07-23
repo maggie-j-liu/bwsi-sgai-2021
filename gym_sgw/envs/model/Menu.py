@@ -10,7 +10,7 @@ class Menu:
     def __init__(self):
         pg.init()
         self.screen = pygame.display.set_mode((1000, 800))
-        self.bg_color = (106, 159, 181)
+        self.bg_color = (106, 159, 181)  # placeholder color value rn (R, G, B)
         self.text_color = ()
         self.game_state = None
 
@@ -20,19 +20,23 @@ class Menu:
         print(self.game_state)
 
         while True:
+            # runs start screen if game state is title
             if game_state == GameState.title:
                 print("game state is title")
                 game_state = self.start_screen(self.screen)
 
+            # returns the game state back to where menu is called (sgwhumanplay) so real game can start
             if game_state == GameState.new_game:
                 print("game state is new game")
                 game_state == self.play_level()
                 return game_state
 
+            # runs end screen if game state is close
             if game_state == GameState.close:
                 print("game state is close")
                 game_state == self.end_screen(self.screen)
 
+            # quits game if game state is quit
             if game_state == GameState.quit:
                 print("game state is quit")
                 pg.quit()

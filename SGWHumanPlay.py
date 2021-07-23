@@ -42,7 +42,7 @@ class SGW:
         self.start_menu = Menu()
         sgw_env = env
         if self.start_menu.load_menu(GameState.title):
-            sgw_env.run()
+            sgw_env.run()  # actually runs the game when game state matches "new_game"
 
     def end(self):
         self.end_menu = Menu.load_menu(GameState.close)

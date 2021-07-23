@@ -3,6 +3,11 @@ from pygame.sprite import Sprite
 import pygame.freetype
 from pygame.rect import Rect
 
+"""
+pygame doesn't really have ui things, so a class to make buttons and stuff.
+probably not very efficient but i did it like this for some reason :')
+"""
+
 
 class UIElement(Sprite):
 
