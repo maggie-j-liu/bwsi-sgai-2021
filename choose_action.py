@@ -1,5 +1,4 @@
 from gym_sgw.envs.enums.Enums import Actions, Terrains, MapObjects
-from collections import deque
 from gym_sgw.envs.model.Constants import BASE_ENERGY, BAT_POWER, FIRE_DRAIN, PICK_UP_PERSON, NOT_PICK_UP_PERSON, RUN_INTO_PERSON
 import heapq
 import copy
@@ -20,7 +19,7 @@ def choose_action(observation):
     heapq.heappush(pq, (0, (initiali, initialj, initialor, initial_has_person), Actions.none, original_grid))
     dist[initiali][initialj][initialor][initial_has_person] = 0
     bestdist = 1000000
-    bestact = Actions.none
+    bestact = Actions.quit
     while len(pq) > 0:
         distance, loc, act, grid = heapq.heappop(pq)
         i, j, ori, has_person = loc
