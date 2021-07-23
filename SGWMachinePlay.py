@@ -30,6 +30,7 @@ class SGW:
         self.game_screen = None
         self.play_area = None
         self.latest_obs = None
+        self.fire_blits = []
 
         # Always do these actions upon start
         self._setup()
@@ -70,24 +71,31 @@ class SGW:
                 elif cell.terrain == Terrains.floor:
                     cell_color = pg.color.Color(MapColors.floor_tile.value)
                 elif cell.terrain == Terrains.future_fire:
-                    cell_color = pg.color.Color(MapColors.future_fire_tile.value)
+                    cell_color = pg.color.Color(MapColors.floor_tile.value)
+                    cell_img = pg.image.load("gym_sgw/envs/assets/sgai_fire_spreading.png")
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.fire_blits.append(blit)
                 elif cell.terrain == Terrains.fire:
-                    cell_color = pg.image.load("gym_sgw/envs/assets/sgai_fire_regular.png")
-                    cell_color = pg.transform.scale(cell_color, (self.cell_size, self.cell_size))
+                    cell_color = pg.color.Color(MapColors.floor_tile.value)
+                    cell_img = pg.image.load("gym_sgw/envs/assets/sgai_fire_regular.png")
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.fire_blits.append(blit)
                 elif cell.terrain == Terrains.hospital:
-                    cell_color = pg.color.Color(MapColors.hospital_tile.value)
+                    cell_color = pg.color.Color(MapColors.floor_tile.value)
+                    cell_img = pg.image.load("gym_sgw/envs/assets/sgai_hospital.png")
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.fire_blits.append(blit)
                 else:
                     raise ValueError('Invalid cell terrain while rendering game image.')
 
                 # Draw the rectangle with the right color for the terrains
                 # rect is play area, color, and (left point, top point, width, height)
-                if type(cell_color) == pg.Color:
-                    pg.draw.rect(self.play_area, cell_color, (c_ * self.cell_size, r_ * self.cell_size,
-                                                          self.cell_size, self.cell_size))
-                    self.game_screen.blit(self.play_area, self.play_area.get_rect())
-                elif type(cell_color) == pg.Surface:
-                    self.game_screen.blit(cell_color, cell_color.get_rect())
-                    pg.display.flip()
+                pg.draw.rect(self.play_area, cell_color, (c_ * self.cell_size, r_ * self.cell_size,
+                                                        self.cell_size, self.cell_size))
+                self.game_screen.blit(self.play_area, self.play_area.get_rect())
 
                 # Add in the cell value string
                 pg.font.init()
@@ -97,6 +105,10 @@ class SGW:
                 text_surf = cell_font.render(cell_val, True, pg.color.Color(MapColors.text.value))
                 self.play_area.blit(text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
                                                 (r_ * self.cell_size) + self.cell_size // 2))
+        pg.display.update()
+
+    def _draw_fire(self):
+        self.game_screen.blits(self.fire_blits)
         pg.display.update()
 
     def run(self):
@@ -116,7 +128,7 @@ class SGW:
         game_exit = False
         while not game_exit:
             for event in pg.event.get():
-
+                self._draw_fire()
                 # Exit game upon window close
                 if event.type == pg.QUIT:
                     game_exit = True
