@@ -605,7 +605,9 @@ class Grid:
                 elif cell.terrain == Terrains.future_fire:
                     cell_color = pg.color.Color(MapColors.future_fire_tile.value)
                 elif cell.terrain == Terrains.fire:
-                    cell_color = pg.color.Color(MapColors.fire_tile.value)
+                    # cell_color = pg.color.Color(MapColors.fire_tile.value)
+                    cell_color = pg.image.load("gym_sgw/envs/assets/sgai_fire_regular.png")
+                    cell_color = pg.transform.scale(cell_color, (self.cell_size, self.cell_size))
                 elif cell.terrain == Terrains.hospital:
                     cell_color = pg.color.Color(MapColors.hospital_tile.value)
                 else:
@@ -613,8 +615,14 @@ class Grid:
 
                 # Draw the rectangle with the right color for the terrains
                 # rect is play area, color, and (left point, top point, width, height)
-                pg.draw.rect(play_area, cell_color, (c_ * cell_size, r_ * cell_size, cell_size, cell_size))
-                game_screen.blit(play_area, play_area.get_rect())
+                if type(cell_color) == pg.Color:
+                    pg.draw.rect(self.play_area, cell_color, (c_ * self.cell_size, r_ * self.cell_size,
+                                                          self.cell_size, self.cell_size))
+                    self.game_screen.blit(self.play_area, self.play_area.get_rect())
+                elif type(cell_color) == pg.Surface:
+                    pg.transform.scale(cell_color, (self.cell_size, self.cell_size))
+                    self.game_screen.blit(cell_color, cell_color.get_rect())
+                    pg.display.flip()
 
                 # Add in the cell value string
                 pg.font.init()
