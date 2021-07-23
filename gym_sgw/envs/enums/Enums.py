@@ -24,6 +24,7 @@ class Actions(IntEnum):
     turn_left = 1
     turn_right = 2
     step_forward = 3
+    quit = 4
 
 
 class Orientations(IntEnum):

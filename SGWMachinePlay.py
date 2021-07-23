@@ -94,7 +94,7 @@ class SGW:
                                                 (r_ * self.cell_size) + self.cell_size // 2))
         pg.display.update()
 
-    def run(self):
+    async def run(self):
 
         print('Starting new game with machine play!')
         # Set up pygame loop for game, capture actions, and redraw the screen on action
@@ -136,6 +136,9 @@ class SGW:
                         action = choose_action(self.latest_obs)
 
                     if action is not None:
+                        if action == Actions.quit:
+                            game_exit = True
+                            self.done()
                         if action in [Actions.step_forward, Actions.turn_right, Actions.turn_left, Actions.none]:
                             # We have a valid action, so let's process it and update the screen
                             encoded_action = self.env.encode_raw_action(action)  # Ensures clean action
