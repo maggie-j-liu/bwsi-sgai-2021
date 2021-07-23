@@ -40,4 +40,4 @@ if __name__ == '__main__':
         num_rows=num_rows,
         num_cols=num_cols
     )
-    sgw_env.run()
+    sgw_env.start(sgw_env)

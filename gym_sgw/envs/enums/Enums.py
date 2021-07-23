@@ -14,7 +14,7 @@ class Terrains(IntEnum):
 class MapObjects(IntEnum):
     none = 0
     injured = 1
-    #zombie = 3
+    # zombie = 3
     battery = 4
     player = 5
 
@@ -48,6 +48,7 @@ class MapProfiles(IntEnum):
     volcano = 6
     simple = 7
 
+
 class MapColors(Enum):
     play_area = '#000000'
     game_screen = '#6665adff'
@@ -58,3 +59,10 @@ class MapColors(Enum):
     fire_tile = '#bd4713ff'
     hospital_tile = '#8c2e3aff'
     text = '#ffffff'
+
+
+class GameState(Enum):
+    quit = -1
+    title = 0
+    new_game = 1
+    close = 2
