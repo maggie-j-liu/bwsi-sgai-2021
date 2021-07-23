@@ -7,6 +7,7 @@ class Pedestrian:
         # create dictionary of all pedestrians based on location -- {location:hp}
         self.objects = {}
         self.hp = 5
+        self.death_count = 0
 
     # create a new pedestrian in object dictionary
     def add_ped(self, x, y):
@@ -22,6 +23,7 @@ class Pedestrian:
                 pass
             else:
                 del self.objects[location]
+                self.death_count += 1
 
     # take away one hp from pedestrian object (to be called when location of ped is on fire terrain)
     def hurt(self, x, y):
@@ -42,3 +44,7 @@ class Pedestrian:
     # returns the number of pedestrians remaining
     def get_num_peds(self):
         return len(self.objects)
+
+    # returns num of pedestrians dead due to fire
+    def get_deaths(self):
+        return self.death_count
