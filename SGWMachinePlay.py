@@ -31,6 +31,7 @@ class SGW:
         self.play_area = None
         self.latest_obs = None
         self.fire_blits = []
+        self.text_blits = []
 
         # Always do these actions upon start
         self._setup()
@@ -103,12 +104,14 @@ class SGW:
                 cell_val = self.env.grid.get_human_cell_value(r_, c_)
                 # cell_val = '{},{}'.format(r_, c_)
                 text_surf = cell_font.render(cell_val, True, pg.color.Color(MapColors.text.value))
-                self.play_area.blit(text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
-                                                (r_ * self.cell_size) + self.cell_size // 2))
+                text_blit = (text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
+                                         (r_ * self.cell_size) + self.cell_size // 2))
+                self.text_blits.append(text_blit)
         pg.display.update()
 
-    def _draw_fire(self):
+    def _draw_icons(self):
         self.game_screen.blits(self.fire_blits)
+        self.game_screen.blits(self.text_blits)
         pg.display.update()
 
     def run(self):
@@ -128,7 +131,7 @@ class SGW:
         game_exit = False
         while not game_exit:
             for event in pg.event.get():
-                self._draw_fire()
+                self._draw_icons()
                 # Exit game upon window close
                 if event.type == pg.QUIT:
                     game_exit = True
