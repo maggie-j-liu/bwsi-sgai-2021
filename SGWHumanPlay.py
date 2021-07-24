@@ -126,6 +126,7 @@ class SGW:
         self.game_screen.blits(self.fire_blits)
         self.game_screen.blits(self.text_blits)
         pg.display.update()
+        self.fire_blits, self.text_blits = [], []
 
     def run(self):
 
