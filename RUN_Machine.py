@@ -32,8 +32,8 @@ if __name__ == '__main__':
         map_file = None  # 'gym_sgw/envs/maps/_SampleMap.xls'  # None will generate a random map, map files have top priority
         max_energy = 50
         rand_prof = MapProfiles.simple
-        num_rows = 12
-        num_cols = 12
+        num_rows = 20
+        num_cols = 20
         for i in range(int(args.games)):
             # Create and run game with those params
             sgw_env = SGW(
