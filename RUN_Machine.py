@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser(description='CLI Argument Parser for Human Play
 parser.add_argument('--outfile', help='Data logging file name.', default='data_log.json')
 parser.add_argument('--creation', help='Allow creation of output file.', default=True, action='store_true')
 parser.add_argument('--games', help='Number of games to play.', default='1')
+parser.add_argument('--manual', help='Enables manual mode', default=False, action='store_true')
 
 
 def validate_data(out_file, allow_creation=False):
@@ -31,8 +32,8 @@ if __name__ == '__main__':
         map_file = None  # 'gym_sgw/envs/maps/_SampleMap.xls'  # None will generate a random map, map files have top priority
         max_energy = 50
         rand_prof = MapProfiles.simple
-        num_rows = 12
-        num_cols = 12
+        num_rows = 20
+        num_cols = 20
         for i in range(int(args.games)):
             # Create and run game with those params
             sgw_env = SGW(
@@ -41,7 +42,8 @@ if __name__ == '__main__':
                 max_energy=max_energy,
                 rand_prof=rand_prof,
                 num_rows=num_rows,
-                num_cols=num_cols
+                num_cols=num_cols,
+                manual=args.manual
             )
             await sgw_env.run()
 
