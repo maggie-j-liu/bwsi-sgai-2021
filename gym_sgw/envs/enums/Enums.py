@@ -48,6 +48,13 @@ class MapProfiles(IntEnum):
     twisty = 5
     volcano = 6
     simple = 7
+    concentrated = 8
+
+class Concentrations(IntEnum):
+    upper_left = 0
+    bottom_left = 1
+    upper_right = 2
+    bottom_right = 3
 
 class MapColors(Enum):
     play_area = '#000000'
