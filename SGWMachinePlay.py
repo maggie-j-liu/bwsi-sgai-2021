@@ -12,7 +12,7 @@ class SGW:
     Machine play game variant using a pathfinding algorithm.
     """
     def __init__(self, data_log_file='data_log.json', max_energy=50, map_file=None,
-                 rand_prof=MapProfiles.simple, num_rows=25, num_cols=25, manual=False):
+                 rand_prof=MapProfiles.concentrated, num_rows=25, num_cols=25, manual=False):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
         self.GAME_ID = uuid.uuid4()
@@ -177,7 +177,8 @@ class SGW:
                                 'reward': reward,
                                 'game_done': done,
                                 'game_info': {k.replace('.', '_'): v for (k, v) in info.items()},
-                                'raw_state': str(observation)
+                                'raw_state': str(observation),
+                                'percent_saved': self.env.grid.get_percent_saved()
                             }
                             with open(self.DATA_LOG_FILE_NAME, 'a') as f_:
                                 f_.write(json.dumps(data_to_log) + '\n')

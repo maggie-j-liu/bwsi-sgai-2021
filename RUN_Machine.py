@@ -31,7 +31,7 @@ if __name__ == '__main__':
         data_log_file = args.outfile
         map_file = None  # 'gym_sgw/envs/maps/_SampleMap.xls'  # None will generate a random map, map files have top priority
         max_energy = 50
-        rand_prof = MapProfiles.simple
+        rand_prof = MapProfiles.concentrated
         num_rows = 20
         num_cols = 20
         for i in range(int(args.games)):
@@ -48,4 +48,3 @@ if __name__ == '__main__':
             await sgw_env.run()
 
     asyncio.run(main())
-
