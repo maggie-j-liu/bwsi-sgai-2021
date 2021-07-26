@@ -156,7 +156,8 @@ class SGW:
                                 'game_done': done,
                                 'game_info': {k.replace('.', '_'): v for (k, v) in info.items()},
                                 'raw_state': observation,
-                                'percent_saved': self.env.grid.get_data()[0]
+                                'percent_saved': self.env.grid.get_data()[0],
+                                'object_data': self.env.grid.get_data()[1]
                             }
                             with open(self.DATA_LOG_FILE_NAME, 'a') as f_:
                                 f_.write(json.dumps(data_to_log) + '\n')
