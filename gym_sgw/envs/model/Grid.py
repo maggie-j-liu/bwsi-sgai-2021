@@ -299,7 +299,6 @@ class Grid:
                             self.ped_list.remove_ped(r_, c_)
                             cell.remove_map_object(MapObjects.injured)
 
-
     def move_fire(self):
         # Locate predicted squares & change to fire
         for r_ in range(1, self.rows):
@@ -588,6 +587,16 @@ class Grid:
         play_area = pg.Surface((self.rows * cell_size, self.cols * cell_size))
         play_area.fill(pg.color.Color(MapColors.play_area.value))
         game_screen.fill(pg.color.Color(MapColors.game_screen.value))
+        # energy bar & text
+        energy_bg, energy_color = pg.color.Color('#86868cff'), pg.color.Color("#3ddb62")
+        pg.draw.rect(self.game_screen, energy_bg, (650, 100, 300, 50))
+        energy_width = self.env.get_energy_remaining() * 3
+        pg.draw.rect(self.game_screen, energy_color, (660, 110, energy_width, 30))
+        pg.draw.rect(self.game_screen, pg.color.Color(MapColors.game_screen.value), (650, 50, 300, 50))
+        energy_font = pg.font.SysFont(pg.font.get_default_font(), 32)
+        text = energy_font.render('Energy Remaining: ' + str(self.env.get_energy_remaining()), 
+                                  True, pg.color.Color(MapColors.text.value))
+        game_screen.blit(text, (650, 70))
 
         # Populate each cell
         for r_ in range(self.rows):

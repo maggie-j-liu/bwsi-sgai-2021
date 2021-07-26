@@ -130,6 +130,17 @@ class SGW:
                 text_blit = (text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
                                          (r_ * self.cell_size) + self.cell_size // 2))
                 self.text_blits.append(text_blit)
+
+        # energy bar & text
+        energy_bg, energy_color = pg.color.Color('#86868cff'), pg.color.Color("#3ddb62")
+        pg.draw.rect(self.game_screen, energy_bg, (650, 100, 300, 50))
+        energy_width = self.env.get_energy_remaining() * 3
+        pg.draw.rect(self.game_screen, energy_color, (660, 110, energy_width, 30))
+        pg.draw.rect(self.game_screen, pg.color.Color(MapColors.game_screen.value), (650, 50, 300, 50))
+        energy_font = pg.font.SysFont(pg.font.get_default_font(), 32)
+        text = energy_font.render('Energy Remaining: ' + str(self.env.get_energy_remaining()), 
+                                  True, pg.color.Color(MapColors.text.value))
+        self.text_blits.append((text, (650, 70)))
         pg.display.update()
 
     def _draw_icons(self):
