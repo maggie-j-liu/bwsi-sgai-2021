@@ -25,11 +25,13 @@ class Menu:
             if game_state == GameState.title:
                 # print("game state is title")
                 game_state = self.start_screen(self.screen)
+                self.game_state = game_state
 
             # returns the game state back to where menu is called (sgwhumanplay) so real game can start
             if game_state == GameState.new_game:
                 # print("game state is new game")
                 game_state == self.play_level()
+                self.game_state = game_state
                 return game_state
 
             # runs end screen if game state is close
@@ -40,13 +42,14 @@ class Menu:
             # quits game if game state is quit
             if game_state == GameState.quit:
                 # print("game state is quit")
+                self.game_state = game_state
                 pg.quit()
                 return
 
     def start_screen(self, screen):
         # print("in start_screen")
         human_start_btn = UIElement(
-            center_pos=(500, 300),
+            center_pos=(200, 250),
             font_size=30,
             bg_rgb=SchemeColors.light_blue.value,
             high_bg_rgb=SchemeColors.blue.value,
@@ -55,7 +58,7 @@ class Menu:
             action=GameState.new_game
         )
         machine_start_btn = UIElement(
-            center_pos=(500, 350),
+            center_pos=(250, 290),
             font_size=30,
             bg_rgb=SchemeColors.light_purple.value,
             high_bg_rgb=SchemeColors.purple.value,
@@ -63,7 +66,7 @@ class Menu:
             text="Automatic Play"
         )
         options_btn = UIElement(
-            center_pos=(500, 400),
+            center_pos=(255, 330),
             font_size=30,
             bg_rgb=SchemeColors.light_pink.value,
             high_bg_rgb=SchemeColors.pink.value,
@@ -71,7 +74,7 @@ class Menu:
             text="Options"
         )
         quit_btn = UIElement(
-            center_pos=(500, 500),
+            center_pos=(290, 370),
             font_size=30,
             bg_rgb=SchemeColors.light_orange.value,
             high_bg_rgb=SchemeColors.orange.value,
@@ -83,6 +86,16 @@ class Menu:
         buttons = RenderUpdates(human_start_btn, machine_start_btn, options_btn, quit_btn)
 
         return self.menu_loop(self.screen, buttons)
+
+    def draw_shapes(self, screen):
+        surface = screen
+        if self.game_state == GameState.title:
+            pygame.draw.rect(surface, SchemeColors.light_blue.value, pygame.Rect(0, 234, 1000, 32))
+            pygame.draw.rect(surface, SchemeColors.light_purple.value, pygame.Rect(0, 274, 1000, 32))
+            pygame.draw.rect(surface, SchemeColors.light_pink.value, pygame.Rect(0, 314, 1000, 32))
+            pygame.draw.rect(surface, SchemeColors.light_orange.value, pygame.Rect(0, 354, 1000, 32))
+        elif self.game_state == GameState.close:
+            pass
 
     def play_level(self):
         if self.game_state == GameState.new_game:
@@ -121,6 +134,7 @@ class Menu:
                 if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     mouse_up = True
             screen.fill(self.bg_color)  # color (R, G, B)
+            self.draw_shapes(screen)
 
             for button in buttons:
                 ui_action = button.update(pygame.mouse.get_pos(), mouse_up)
