@@ -23,7 +23,11 @@ class Grid:
         self.player_location = None
         self.grid = self.read_in_map() if map_file is not None else self.random_grid()
         self.map_max_energy = None
+
+        # data to collect
         self.initial_peds = self.ped_list.get_num_peds()
+        self.object_data = {'squished': 0, 'delivered': 0, 'burned': 0, 
+                            'peds_picked_up': 0, 'batteries': 0, 'steps_in_fire': 0}
 
     def read_in_map(self):
 
@@ -372,9 +376,10 @@ class Grid:
                         next_cell = random.choice(free_cells)
                         next_cell.terrain = Terrains.future_fire
 
-    def get_percent_saved(self):
+    def get_data(self):
         percent = 1 - self.ped_list.get_num_peds()/self.initial_peds
-        return (round(percent, 2))*100
+        percent = (round(percent, 2))*100
+        return self.object_data, percent
 
     def _execute_step_forward(self):
 
@@ -411,6 +416,7 @@ class Grid:
             curr_cell.remove_map_object(MapObjects.injured)
             next_cell.add_map_object(MapObjects.injured)
             self.ped_list.remove_ped(curr_pos[0], curr_pos[1])
+            self.object_data['peds_picked_up'] += 1
 
     def _execute_turn_left(self):
         if self.player_orientation == Orientations.right:
@@ -452,11 +458,13 @@ class Grid:
             if MapObjects.injured in end_cell.objects:
                 t_score += RESCUE_REWARD  # Deliver the injured
                 end_cell.remove_map_object(MapObjects.injured)  # Remove them from the board
+                self.object_data['delivered'] += 1
 
         # Add a penalty if you squish an injured person
         if end_cell.objects.count(MapObjects.injured) > 1:
             t_score += VIC_PENALTY  # Can only carry one so if there's more than one, squish
             end_cell.remove_map_object(MapObjects.injured)
+            self.object_data['squished'] += 1
 
         # Add a penalty for going into fire
         # if end_cell.terrain == Terrains.fire:
@@ -494,6 +502,7 @@ class Grid:
         if MapObjects.battery in end_cell.objects:
             t_energy += BAT_POWER  # I HAAAAVVVEEEEEE THEEEE POOWEEERRRRRRRRRRR
             end_cell.remove_map_object(MapObjects.battery)
+            self.object_data['batteries'] += 1
 
         # Drain energy if you hit mud (do not remove it from the board)
         # if end_cell.terrain == Terrains.mud:
@@ -502,6 +511,7 @@ class Grid:
         # drain energy if you hit fire
         if end_cell.terrain == Terrains.fire:
             t_energy += FIRE_DRAIN
+            self.object_data['steps_in_fire'] += 1
 
         # Add in base energy
         t_energy += BASE_ENERGY
