@@ -362,7 +362,8 @@ class Grid:
                     # locate and save available adjacent cells
                     free_cells= []
                     for adjacent_cell in [self.grid[r_+1][c_], self.grid[r_][c_+1], 
-                                          self.grid[r_-1][c_], self.grid[r_][c_-1]]:
+                                          self.grid[r_-1][c_], self.grid[r_][c_-1], 
+                                          self.grid[r_-1][c_], self.grid[r_-1][c_]]:
                         if adjacent_cell.terrain == Terrains.floor:
                             free_cells.append(adjacent_cell)
                     # may need to use other random function for skewed spread
