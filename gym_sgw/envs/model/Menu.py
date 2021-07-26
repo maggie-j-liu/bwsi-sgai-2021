@@ -10,11 +10,12 @@ class Menu:
     def __init__(self):
         pg.init()
         self.screen = pygame.display.set_mode((1000, 800))
-        self.bg_color = (106, 159, 181)  # placeholder color value rn (R, G, B)
+        self.bg_color = (255, 255, 255)  # placeholder color value rn (R, G, B)
         self.text_color = ()
         self.game_state = None
 
     def load_menu(self, game_state):
+        
         # print("in load_menu")
         self.game_state = game_state
         # print(self.game_state)
@@ -44,24 +45,42 @@ class Menu:
 
     def start_screen(self, screen):
         # print("in start_screen")
-        start_btn = UIElement(
-            center_pos=(400, 400),
-            font_size=30,
-            bg_rgb=None,
+        human_start_btn = UIElement(
+            center_pos=(500, 300),
+            font_size=25,
+            bg_rgb=(204, 218, 255),
+            high_bg_rgb=(100, 143, 255),
             text_rgb=None,
-            text="Start",
+            text="Human Play",
             action=GameState.new_game
         )
+        machine_start_btn = UIElement(
+            center_pos=(500, 350),
+            font_size=25,
+            bg_rgb=(215, 207, 255),
+            high_bg_rgb=(120, 94, 240),
+            text_rgb=None,
+            text="Automatic Play"
+        )
+        options_btn = UIElement(
+            center_pos=(500, 400),
+            font_size=25,
+            bg_rgb=(250, 190, 219),
+            high_bg_rgb=(220, 38, 127),
+            text_rgb=None,
+            text="Options"
+        )
         quit_btn = UIElement(
-            center_pos=(400, 500),
-            font_size=30,
-            bg_rgb=None,
+            center_pos=(500, 500),
+            font_size=25,
+            bg_rgb=(255, 194, 156),
+            high_bg_rgb=(254, 97, 0),
             text_rgb=None,
             text="Quit",
             action=GameState.quit
         )
 
-        buttons = RenderUpdates(start_btn, quit_btn)
+        buttons = RenderUpdates(human_start_btn, machine_start_btn, options_btn, quit_btn)
 
         return self.menu_loop(self.screen, buttons)
 
@@ -71,6 +90,7 @@ class Menu:
         else:
             return False
 
+    # not done yet! might work idk! haven't tested it!
     def end_screen(self, screen):
         replay_btn = UIElement(
             center_pos=None,

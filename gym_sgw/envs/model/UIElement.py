@@ -11,7 +11,7 @@ probably not very efficient but i did it like this for some reason :')
 
 class UIElement(Sprite):
 
-    def __init__(self, center_pos, text, font_size, bg_rgb, text_rgb, action = None):
+    def __init__(self, center_pos, text, font_size, bg_rgb, high_bg_rgb, text_rgb, action = None):
         """
         Args:
             center_position - tuple (x, y)
@@ -24,7 +24,7 @@ class UIElement(Sprite):
         self.mouse_over = False
 
         default_img = self.create_surface_with_text(text=text, font_size=font_size, text_rgb=text_rgb, bg_rgb=bg_rgb)
-        highlighted_img = self.create_surface_with_text(text=text, font_size=font_size * 1.2, text_rgb=text_rgb, bg_rgb=bg_rgb)
+        highlighted_img = self.create_surface_with_text(text=text, font_size=font_size * 1.2, text_rgb=text_rgb, bg_rgb=high_bg_rgb)
 
         self.images = [default_img, highlighted_img]
         self.rects = [default_img.get_rect(center=center_pos), highlighted_img.get_rect(center=center_pos)]
