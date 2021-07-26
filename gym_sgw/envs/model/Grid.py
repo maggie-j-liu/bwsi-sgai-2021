@@ -405,12 +405,15 @@ class Grid:
         # Update the player's position in the cells
         curr_cell.remove_map_object(MapObjects.player)
         next_cell.add_map_object(MapObjects.player)
-
+        print("current pos: ", curr_pos[0], curr_pos[1])
         # Update the map objects in cells so they move with the player (update injured, passengers)
         if MapObjects.injured in curr_cell.objects:
             curr_cell.remove_map_object(MapObjects.injured)
             next_cell.add_map_object(MapObjects.injured)
-            self.ped_list.remove_ped(curr_pos[0], curr_pos[1])
+            print("injured picked up")
+            x, y = curr_pos[0], curr_pos[1]
+            if self.ped_list.exists((x,y)):
+                self.ped_list.save_ped(x, y)
 
     def _execute_turn_left(self):
         if self.player_orientation == Orientations.right:
