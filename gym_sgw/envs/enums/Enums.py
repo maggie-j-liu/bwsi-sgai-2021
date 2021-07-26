@@ -52,13 +52,13 @@ class MapProfiles(IntEnum):
 class MapColors(Enum):
     play_area = '#000000'
     game_screen = '#6665adff'
-    black_tile = '#000000'
-    wall_tile = '#4b4b51ff'
-    floor_tile = '#86868cff'
-    future_fire_tile = '#FFEC8B'
-    fire_tile = '#bd4713ff'
-    hospital_tile = '#8c2e3aff'
-    text = '#ffffff'
+    black_tile = 'gym_sgw/envs/assets/sgai_terrain_outofbounds.png'
+    wall_tile = "gym_sgw/envs/assets/sgai_terrain_impassable.png"
+    floor_tile = 'gym_sgw/envs/assets/sgai_terrain_passable.png'
+    future_fire_tile = "gym_sgw/envs/assets/sgai_fire_spreading.png"
+    fire_tile = "gym_sgw/envs/assets/sgai_fire_regular.png"
+    hospital_tile = "gym_sgw/envs/assets/sgai_hospital.png"
+    text = '#000000'
 
 
 class GameState(Enum):
