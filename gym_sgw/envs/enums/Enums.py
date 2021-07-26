@@ -66,3 +66,17 @@ class GameState(Enum):
     title = 0
     new_game = 1
     close = 2
+
+
+class SchemeColors(Enum):
+    blue = (100, 143, 255)
+    light_blue = (204, 218, 255)
+    purple = (120, 94, 240)
+    light_purple = (215, 207, 255)
+    pink = (220, 38, 127)
+    light_pink = (250, 190, 219)
+    orange = (254, 97, 0)
+    light_orange = (255, 194, 156)
+    yellow = (255, 176, 0)
+    white = (255, 255, 255)
+

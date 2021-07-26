@@ -1,6 +1,6 @@
 import pygame as pg
 import pygame.display
-from gym_sgw.envs.enums.Enums import GameState
+from gym_sgw.envs.enums.Enums import GameState, SchemeColors
 from gym_sgw.envs.model.UIElement import UIElement
 from pygame.sprite import RenderUpdates
 
@@ -10,7 +10,7 @@ class Menu:
     def __init__(self):
         pg.init()
         self.screen = pygame.display.set_mode((1000, 800))
-        self.bg_color = (255, 255, 255)  # placeholder color value rn (R, G, B)
+        self.bg_color = SchemeColors.white.value
         self.text_color = ()
         self.game_state = None
 
@@ -47,34 +47,34 @@ class Menu:
         # print("in start_screen")
         human_start_btn = UIElement(
             center_pos=(500, 300),
-            font_size=25,
-            bg_rgb=(204, 218, 255),
-            high_bg_rgb=(100, 143, 255),
+            font_size=30,
+            bg_rgb=SchemeColors.light_blue.value,
+            high_bg_rgb=SchemeColors.blue.value,
             text_rgb=None,
             text="Human Play",
             action=GameState.new_game
         )
         machine_start_btn = UIElement(
             center_pos=(500, 350),
-            font_size=25,
-            bg_rgb=(215, 207, 255),
-            high_bg_rgb=(120, 94, 240),
+            font_size=30,
+            bg_rgb=SchemeColors.light_purple.value,
+            high_bg_rgb=SchemeColors.purple.value,
             text_rgb=None,
             text="Automatic Play"
         )
         options_btn = UIElement(
             center_pos=(500, 400),
-            font_size=25,
-            bg_rgb=(250, 190, 219),
-            high_bg_rgb=(220, 38, 127),
+            font_size=30,
+            bg_rgb=SchemeColors.light_pink.value,
+            high_bg_rgb=SchemeColors.pink.value,
             text_rgb=None,
             text="Options"
         )
         quit_btn = UIElement(
             center_pos=(500, 500),
-            font_size=25,
-            bg_rgb=(255, 194, 156),
-            high_bg_rgb=(254, 97, 0),
+            font_size=30,
+            bg_rgb=SchemeColors.light_orange.value,
+            high_bg_rgb=SchemeColors.orange.value,
             text_rgb=None,
             text="Quit",
             action=GameState.quit
@@ -90,21 +90,20 @@ class Menu:
         else:
             return False
 
-    # not done yet! might work idk! haven't tested it!
     def end_screen(self, screen):
         replay_btn = UIElement(
-            center_pos=None,
-            font_size=None,
-            bg_rgb=None,
-            text_rgb=None,
+            center_pos=(450, 500),
+            font_size=30,
+            bg_rgb=SchemeColors.blue.value,
+            text_rgb=SchemeColors.white.value,
             text="Replay",
             action=GameState.new_game
         )
         quit_btn = UIElement(
-            center_pos=None,
-            font_size=None,
-            bg_rgb=None,
-            text_rgb=None,
+            center_pos=(550, 500),
+            font_size=30,
+            bg_rgb=SchemeColors.orange.value,
+            text_rgb=SchemeColors.white.value,
             text="Quit",
             action=GameState.quit
         )
