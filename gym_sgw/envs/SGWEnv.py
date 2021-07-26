@@ -106,7 +106,8 @@ class SGW(gym.Env):
                           action_taken=self.latest_action,
                           energy_remaining=(self.max_energy - self.energy_used),
                           game_score=self.total_score,
-                          percent_saved=self.grid.get_percent_saved())
+                          percent_saved=self.grid.get_data()[0],
+                          object_data=self.grid.get_data()[1])
 
     @staticmethod
     def encode_raw_action(input_str: Union[str, Actions]) -> Actions:
