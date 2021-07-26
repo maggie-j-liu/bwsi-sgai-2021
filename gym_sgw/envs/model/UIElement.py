@@ -57,7 +57,7 @@ class UIElement(Sprite):
 
     # returns surface w/ text written on top
     def create_surface_with_text(self, text, font_size, text_rgb, bg_rgb):
-        font = pygame.freetype.SysFont("Courier", font_size, bold=True)
+        font = pygame.freetype.SysFont("Calibri", font_size, bold=True, italic=True)
         surface, _ = font.render(text=text, fgcolor=text_rgb, bgcolor=bg_rgb)
         return surface.convert_alpha()
 
