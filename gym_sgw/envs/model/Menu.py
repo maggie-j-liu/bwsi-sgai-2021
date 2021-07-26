@@ -1,5 +1,6 @@
 import pygame as pg
 import pygame.display
+import pygame.freetype
 from gym_sgw.envs.enums.Enums import GameState, SchemeColors
 from gym_sgw.envs.model.UIElement import UIElement
 from pygame.sprite import RenderUpdates
@@ -87,6 +88,7 @@ class Menu:
 
         return self.menu_loop(self.screen, buttons)
 
+    # draw shapes/text stuff that isn't buttons onto screen window
     def draw_shapes(self, screen):
         surface = screen
         if self.game_state == GameState.title:
@@ -94,6 +96,9 @@ class Menu:
             pygame.draw.rect(surface, SchemeColors.light_purple.value, pygame.Rect(0, 274, 1000, 32))
             pygame.draw.rect(surface, SchemeColors.light_pink.value, pygame.Rect(0, 314, 1000, 32))
             pygame.draw.rect(surface, SchemeColors.light_orange.value, pygame.Rect(0, 354, 1000, 32))
+            # font = pygame.freetype.SysFont("Calibri", 45, bold=True)
+            # title = font.render('Good Game', False, (0, 0, 0))
+            # screen.blit(title)
         elif self.game_state == GameState.close:
             pass
 
