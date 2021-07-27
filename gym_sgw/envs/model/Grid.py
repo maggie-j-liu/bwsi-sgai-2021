@@ -24,6 +24,7 @@ class Grid:
         self.grid = self.read_in_map() if map_file is not None else self.random_grid()
         self.map_max_energy = None
         self.initial_peds = self.ped_list.get_num_peds()
+        self.burned = 0
 
     def read_in_map(self):
 
@@ -343,6 +344,7 @@ class Grid:
                             self.ped_list.remove_ped(r_, c_)
                             cell.remove_map_object(MapObjects.injured)
                             turn_score += self._get_score_of_other()  # negative reward for pedestrian burn death
+                            self.burned += 1
         return turn_score
 
     def move_fire(self):
@@ -372,8 +374,8 @@ class Grid:
                         next_cell.terrain = Terrains.future_fire
 
     def get_percent_saved(self):
-        percent = 1 - self.ped_list.get_num_peds()/self.initial_peds
-        return (round(percent, 2))*100
+        percent = 1 - ((self.ped_list.get_num_peds() + self.burned)/self.initial_peds)
+        return (round(percent*100, 2))
 
     def _execute_step_forward(self):
 
@@ -404,12 +406,12 @@ class Grid:
         # Update the player's position in the cells
         curr_cell.remove_map_object(MapObjects.player)
         next_cell.add_map_object(MapObjects.player)
-        print("current pos: ", curr_pos[0], curr_pos[1])
+        # print("current pos: ", curr_pos[0], curr_pos[1])
         # Update the map objects in cells so they move with the player (update injured, passengers)
         if MapObjects.injured in curr_cell.objects:
             curr_cell.remove_map_object(MapObjects.injured)
             next_cell.add_map_object(MapObjects.injured)
-            print("injured picked up")
+            # print("injured picked up")
             x, y = curr_pos[0], curr_pos[1]
             if self.ped_list.exists((x,y)):
                 self.ped_list.save_ped(x, y)
