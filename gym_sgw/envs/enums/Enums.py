@@ -77,8 +77,9 @@ class MapColors(Enum):
 class GameState(Enum):
     quit = -1
     title = 0
-    new_game = 1
-    close = 2
+    new_human_game = 1
+    new_machine_game = 2
+    close = 3
 
 
 class SchemeColors(Enum):
