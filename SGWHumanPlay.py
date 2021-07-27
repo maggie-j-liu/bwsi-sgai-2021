@@ -38,11 +38,14 @@ class SGW:
         # Always do these actions upon start
         self._setup()
 
-    def start(self, env):
+    async def start(self, env_human, env_machine):
         self.start_menu = Menu()
-        sgw_env = env
-        if self.start_menu.load_menu(GameState.title):
-            sgw_env.run()  # actually runs the game when game state matches "new_game"
+        game = self.start_menu.load_menu(GameState.title)
+        print(game)
+        if game == GameState.new_human_game:
+            env_human.run()  # actually runs the game when game state matches "new_human_game"
+        elif game == GameState.new_machine_game:
+            await env_machine.run()
 
     def end(self, stats):
         self.end_menu = Menu()

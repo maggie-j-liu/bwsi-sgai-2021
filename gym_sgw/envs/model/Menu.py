@@ -29,7 +29,7 @@ class Menu:
                 self.game_state = game_state
 
             # returns the game state back to where menu is called (sgwhumanplay) so real game can start
-            if game_state == GameState.new_game:
+            if game_state == GameState.new_human_game or game_state == GameState.new_machine_game:
                 # print("game state is new game")
                 game_state == self.play_level()
                 self.game_state = game_state
@@ -56,7 +56,7 @@ class Menu:
             high_bg_rgb=SchemeColors.blue.value,
             text_rgb=None,
             text="Human Play",
-            action=GameState.new_game
+            action=GameState.new_human_game
         )
         machine_start_btn = UIElement(
             center_pos=(250, 290),
@@ -64,7 +64,8 @@ class Menu:
             bg_rgb=SchemeColors.light_purple.value,
             high_bg_rgb=SchemeColors.purple.value,
             text_rgb=None,
-            text="Automatic Play"
+            text="Automatic Play",
+            action=GameState.new_machine_game
         )
         options_btn = UIElement(
             center_pos=(255, 330),
@@ -105,7 +106,7 @@ class Menu:
             pass
 
     def play_level(self):
-        if self.game_state == GameState.new_game:
+        if self.game_state == GameState.new_human_game or self.game_state == GameState.new_machine_game:
             return True
         else:
             return False
@@ -117,7 +118,7 @@ class Menu:
             bg_rgb=SchemeColors.blue.value,
             text_rgb=SchemeColors.white.value,
             text="Replay",
-            action=GameState.new_game
+            action=self.game_state
         )
         quit_btn = UIElement(
             center_pos=(550, 500),
