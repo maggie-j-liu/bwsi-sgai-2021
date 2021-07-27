@@ -64,7 +64,7 @@ class Menu:
             action=GameState.new_machine_game
         )
         options_btn = UIElement(
-            center_pos=(255, 330),
+            center_pos=(250, 330),
             font_size=30,
             bg_rgb=SchemeColors.light_pink.value,
             high_bg_rgb=SchemeColors.pink.value,
@@ -72,7 +72,7 @@ class Menu:
             text="Options"
         )
         quit_btn = UIElement(
-            center_pos=(290, 370),
+            center_pos=(295, 370),
             font_size=30,
             bg_rgb=SchemeColors.light_orange.value,
             high_bg_rgb=SchemeColors.orange.value,
