@@ -11,7 +11,7 @@ class SGW:
     """
     Machine play game variant using a pathfinding algorithm.
     """
-    def __init__(self, data_log_file='data_log.json', max_energy=50, map_file=None,
+    def __init__(self, data_log_file='data_log_machine.json', max_energy=50, map_file=None,
                  rand_prof=MapProfiles.concentrated, num_rows=25, num_cols=25, manual=False):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
