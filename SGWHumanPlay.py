@@ -209,11 +209,12 @@ class SGW:
         game_exit = False
         while not game_exit:
             for event in pg.event.get():
-                self._draw_icons()
                 # Exit game upon window close
                 if event.type == pg.QUIT:
                     game_exit = True
                     self.done()
+
+                self._draw_icons()
 
                 if self.turn < self.max_turn and not self.is_game_over:
 

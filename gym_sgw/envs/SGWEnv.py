@@ -97,7 +97,7 @@ class SGW(gym.Env):
             raise ValueError('Failed to find acceptable play type.')
     
     def get_energy_remaining(self):
-        return self.max_energy + self.energy_used
+        return self.max_energy - self.energy_used
 
     def render(self):
         return self.grid.render(turns_executed=self.turns_executed,
