@@ -88,17 +88,19 @@ class Menu:
 
         return self.menu_loop(self.screen, buttons)
 
-    # draw shapes/text stuff that isn't buttons onto screen window
+    # draw shapes/text stuff that aren't buttons onto screen window
     def draw_shapes(self, screen):
         surface = screen
         if self.game_state == GameState.title:
+            # buttons style rectangle things
             pygame.draw.rect(surface, SchemeColors.light_blue.value, pygame.Rect(0, 234, 1000, 32))
             pygame.draw.rect(surface, SchemeColors.light_purple.value, pygame.Rect(0, 274, 1000, 32))
             pygame.draw.rect(surface, SchemeColors.light_pink.value, pygame.Rect(0, 314, 1000, 32))
             pygame.draw.rect(surface, SchemeColors.light_orange.value, pygame.Rect(0, 354, 1000, 32))
-            # font = pygame.freetype.SysFont("Calibri", 45, bold=True)
-            # title = font.render('Good Game', False, (0, 0, 0))
-            # screen.blit(title)
+            # add title
+            title_font = pygame.freetype.SysFont("Calibri", 70, bold=True)
+            title_font.render_to(surface, (190, 90), "Wildfire Rescue", (0, 0, 0))
+
         elif self.game_state == GameState.close:
             pass
 
