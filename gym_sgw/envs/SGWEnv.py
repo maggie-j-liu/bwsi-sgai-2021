@@ -96,12 +96,6 @@ class SGW(gym.Env):
         else:
             raise ValueError('Failed to find acceptable play type.')
 
-    def get_stat(self):
-        return self.grid.machine_encode(turns_executed=self.turns_executed,
-                                        action_taken=self.latest_action,
-                                        energy_remaining=(self.max_energy - self.energy_used),
-                                        game_score=self.total_score)
-
     def get_energy_remaining(self):
         return self.max_energy - self.energy_used
 
