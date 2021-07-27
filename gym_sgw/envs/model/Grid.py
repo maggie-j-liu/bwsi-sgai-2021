@@ -418,6 +418,7 @@ class Grid:
             x, y = curr_pos[0], curr_pos[1]
             if self.ped_list.exists((x,y)):
                 self.ped_list.save_ped(x, y)
+            self.object_data['peds_picked_up'] += 1
 
     def _execute_turn_left(self):
         if self.player_orientation == Orientations.right:
