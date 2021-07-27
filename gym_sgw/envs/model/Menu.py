@@ -17,7 +17,7 @@ class Menu:
 
     def load_menu(self, game_state):
         
-        # print("in load_menu ", game_state)
+        print("in load_menu ", game_state)
         self.game_state = game_state
 
         while True:
@@ -28,8 +28,8 @@ class Menu:
 
             # returns the game state back to where menu is called (sgwhumanplay) so real game can start
             if self.game_state == GameState.new_human_game or self.game_state == GameState.new_machine_game:
-                # print("game state is new game")
-                self.game_state = self.play_level()
+                print("game state is new game")
+                #self.game_state = self.play_level()
                 return self.game_state
 
             # runs end screen if game state is close

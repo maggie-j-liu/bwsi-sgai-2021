@@ -39,8 +39,10 @@ class SGW:
         self._setup()
 
     async def start(self, env_human, env_machine):
+        print('start here')
         self.start_menu = Menu()
         game = self.start_menu.load_menu(GameState.title)
+        print('game')
         print(game)
         if game == GameState.new_human_game:
             env_human.run()  # actually runs the game when game state matches "new_human_game"
