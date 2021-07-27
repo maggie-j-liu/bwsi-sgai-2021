@@ -54,27 +54,27 @@ class SGW(gym.Env):
         turn_score, turn_energy, is_done = self._do_turn(action=action)
         self.latest_action = self.decode_raw_action(action)
         self.turns_executed += 1
-        if self.turns_executed % 4 == 0:
+        if self.turns_executed % 10 == 0:
             self.grid.move_fire()
-        elif self.turns_executed % 2 == 0:
+        elif self.turns_executed % 5 == 0:
             self.grid.predict_fire()
 
-        # hurt pedestrians that are in fire
-        self.grid.burn_pedestrian()
+        # hurt pedestrians that are in fire and add score for any dead pedestrians
+        turn_score += self.grid.burn_pedestrian()
 
         # Update score and turn counters
         self.total_score += turn_score
-        self.energy_used += turn_energy
+        self.energy_used -= turn_energy
 
         # Check if done
-        if is_done or (abs(self.energy_used) >= self.max_energy):
+        if is_done or (self.energy_used >= self.max_energy):
             self.is_game_over = True
 
         # Report out basic information for step
         obs = self.get_obs()
         info = {'turn_reward': turn_score, 'total_reward': self.total_score,
-                'turn_energy_used': turn_energy, 'total_energy_used': self.energy_used,
-                'total_energy_remaining': self.max_energy + self.energy_used}
+                'turn_energy_used': -turn_energy, 'total_energy_used': self.energy_used,
+                'total_energy_remaining': self.max_energy - self.energy_used}
 
         return obs, self.total_score, self.is_game_over, info
 
@@ -86,12 +86,12 @@ class SGW(gym.Env):
         if self.play_type == PlayTypes.human:
             return self.grid.human_encode(turns_executed=self.turns_executed,
                                           action_taken=self.latest_action,
-                                          energy_remaining=(self.max_energy + self.energy_used),
+                                          energy_remaining=(self.max_energy - self.energy_used),
                                           game_score=self.total_score)
         elif self.play_type == PlayTypes.machine:
             return self.grid.machine_encode(turns_executed=self.turns_executed,
                                             action_taken=self.latest_action,
-                                            energy_remaining=(self.max_energy + self.energy_used),
+                                            energy_remaining=(self.max_energy - self.energy_used),
                                             game_score=self.total_score)
         else:
             raise ValueError('Failed to find acceptable play type.')
@@ -102,14 +102,14 @@ class SGW(gym.Env):
     def render(self):
         return self.grid.render(turns_executed=self.turns_executed,
                                     action_taken=self.latest_action,
-                                    energy_remaining=(self.max_energy + self.energy_used),
+                                    energy_remaining=(self.max_energy - self.energy_used),
                                     game_score=self.total_score, cell_size=30)
-
     def pp_info(self):
         self.grid.pp_info(turns_executed=self.turns_executed,
                           action_taken=self.latest_action,
-                          energy_remaining=(self.max_energy + self.energy_used),
-                          game_score=self.total_score)
+                          energy_remaining=(self.max_energy - self.energy_used),
+                          game_score=self.total_score,
+                          percent_saved=self.grid.get_percent_saved())
 
     @staticmethod
     def encode_raw_action(input_str: Union[str, Actions]) -> Actions:
