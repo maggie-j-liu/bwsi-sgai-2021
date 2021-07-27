@@ -666,8 +666,40 @@ class Grid:
                 pg.font.init()
                 cell_font = pg.font.SysFont(pg.font.get_default_font(), 20)
                 cell_val = self.get_human_cell_value(r_, c_)
-                text_surf = cell_font.render(cell_val, True, pg.color.Color(MapColors.text.value))
-                play_area.blit(text_surf, ((c_ * cell_size) + cell_size // 2, (r_ * cell_size) + cell_size // 2))
+                if 'B' in cell_val:
+                    cell_img = pg.image.load(MapColors.battery.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+
+                elif '^' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_up.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif 'v' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_down.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif '<' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_left.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif '>' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_right.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+
+                if 'I' in cell_val:
+                    text_surf = cell_font.render('I', True, pg.color.Color(MapColors.text.value))
+                    # self.play_area.blit(text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
+                    #                                 (r_ * self.cell_size) + self.cell_size // 2))
+                    text_blit = (text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
+                                            (r_ * self.cell_size) + self.cell_size // 2))
+                    self.text_blits.append(text_blit)
 
         # Handle window events and allow for the window to be closed
         game_exit = False

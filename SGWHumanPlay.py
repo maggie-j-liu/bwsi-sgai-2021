@@ -139,12 +139,40 @@ class SGW:
                 cell_font = pg.font.SysFont(pg.font.get_default_font(), 20)
                 cell_val = self.env.grid.get_human_cell_value(r_, c_)
                 # cell_val = '{},{}'.format(r_, c_)
-                text_surf = cell_font.render(cell_val, True, pg.color.Color(MapColors.text.value))
-                # self.play_area.blit(text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
-                #                                 (r_ * self.cell_size) + self.cell_size // 2))
-                text_blit = (text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
-                                         (r_ * self.cell_size) + self.cell_size // 2))
-                self.text_blits.append(text_blit)
+                if 'B' in cell_val:
+                    cell_img = pg.image.load(MapColors.battery.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+
+                elif '^' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_up.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif 'v' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_down.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif '<' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_left.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif '>' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_right.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+
+                if 'I' in cell_val:
+                    text_surf = cell_font.render('I', True, pg.color.Color(MapColors.text.value))
+                    # self.play_area.blit(text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
+                    #                                 (r_ * self.cell_size) + self.cell_size // 2))
+                    text_blit = (text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
+                                            (r_ * self.cell_size) + self.cell_size // 2))
+                    self.text_blits.append(text_blit)
 
         # energy bar & text
         energy_bg, energy_color = pg.color.Color('#86868cff'), pg.color.Color("#3ddb62")

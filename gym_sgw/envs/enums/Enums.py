@@ -58,6 +58,11 @@ class MapColors(Enum):
     future_fire_tile = "gym_sgw/envs/assets/sgai_fire_spreading.png"
     fire_tile = "gym_sgw/envs/assets/sgai_fire_regular.png"
     hospital_tile = "gym_sgw/envs/assets/sgai_hospital.png"
+    battery = "gym_sgw/envs/assets/sgai_battery.png"
+    ambulance_up = "gym_sgw/envs/assets/sgai_ambulance_up.png"
+    ambulance_down = "gym_sgw/envs/assets/sgai_ambulance_down.png"
+    ambulance_left = "gym_sgw/envs/assets/sgai_ambulance_left.png"
+    ambulance_right = "gym_sgw/envs/assets/sgai_ambulance_right.png"
     text = '#000000'
 
 
