@@ -1,5 +1,6 @@
 # Generated files from training / logs
 data_log*.json
+raw_states*.json
 *.h5f.*
 logs/rl-agent-test_training.csv
 logs/rl-agent-test_training.json
