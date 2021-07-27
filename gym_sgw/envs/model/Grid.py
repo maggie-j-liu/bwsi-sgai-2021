@@ -425,6 +425,13 @@ class Grid:
             self.player_orientation = Orientations.right
         else:
             raise RuntimeError('Invalid orientation when trying to change orientation left')
+        curr_pos = self.player_location
+        curr_cell = self.grid[curr_pos[0]][curr_pos[1]]
+        if MapObjects.injured in curr_cell.objects:
+            print("injured picked up")
+            x, y = curr_pos[0], curr_pos[1]
+            if self.ped_list.exists((x,y)):
+                self.ped_list.save_ped(x, y)
 
     def _execute_turn_right(self):
         if self.player_orientation == Orientations.right:
@@ -437,6 +444,13 @@ class Grid:
             self.player_orientation = Orientations.left
         else:
             raise RuntimeError('Invalid orientation when trying to change orientation right')
+        curr_pos = self.player_location
+        curr_cell = self.grid[curr_pos[0]][curr_pos[1]]
+        if MapObjects.injured in curr_cell.objects:
+            print("injured picked up")
+            x, y = curr_pos[0], curr_pos[1]
+            if self.ped_list.exists((x,y)):
+                self.ped_list.save_ped(x, y)
 
     def _get_score_of_action(self):
         # Default Reward Scheme
