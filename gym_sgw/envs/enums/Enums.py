@@ -24,6 +24,7 @@ class Actions(IntEnum):
     turn_left = 1
     turn_right = 2
     step_forward = 3
+    quit = 4
 
 
 class Orientations(IntEnum):
@@ -47,6 +48,13 @@ class MapProfiles(IntEnum):
     twisty = 5
     volcano = 6
     simple = 7
+    concentrated = 8
+
+class Concentrations(IntEnum):
+    upper_left = 0
+    bottom_left = 1
+    upper_right = 2
+    bottom_right = 3
 
 
 class MapColors(Enum):
