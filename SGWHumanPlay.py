@@ -46,8 +46,7 @@ class SGW:
 
     def end(self, stats):
         self.end_menu = Menu()
-        if self.end_menu.load_menu(GameState.close):
-            pass
+        self.end_menu.load_menu(GameState.close)
 
     def _setup(self):
         # Game parameters
@@ -62,10 +61,11 @@ class SGW:
         # Report success
         print('Created new environment {0} with GameID: {1}'.format(self.ENV_NAME, self.GAME_ID))
 
-    def done(self):
+    def done(self, stats):
         print("Episode finished after {} turns.".format(self.turn))
-        pg.quit()
+        # pg.quit()
         self._cleanup()
+        self.end(stats)
 
     def _cleanup(self):
         self.env.close()
@@ -265,9 +265,14 @@ class SGW:
                             # Tick up turn
                             self.turn += 1
 
+                            stats = {
+                                'turn' : self.turn,
+                                'reward' : reward,
+                                'percent_saved': self.env.grid.get_percent_saved()
+                            }
                             if self.is_game_over:
                                 game_exit = True
-                                self.done()
+                                self.done(stats)
 
                             # Draw the screen
                             if not self.is_game_over:
@@ -276,6 +281,6 @@ class SGW:
                 else:
                     # Else end the game
                     game_exit = True
-                    self.done()
+                    self.done(stats)
 
         pg.quit()
