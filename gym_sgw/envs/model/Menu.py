@@ -15,7 +15,7 @@ class Menu:
         self.text_color = ()
         self.game_state = None
 
-    def load_menu(self, game_state):
+    def load_menu(self, game_state, stats=None):
         
         # print("in load_menu ", game_state)
         self.game_state = game_state
@@ -29,8 +29,7 @@ class Menu:
             # returns the game state back to where menu is called (sgwhumanplay) so real game can start
             if self.game_state == GameState.new_game:
                 # print("game state is new game")
-                self.game_state = self.play_level()
-                return self.game_state
+                return self.play_level()
 
             # runs end screen if game state is close
             if self.game_state == GameState.close:
@@ -108,19 +107,21 @@ class Menu:
             return False
 
     def end_screen(self, screen):
-        print("in end_screen")
-        menu_btn = UIElement(
-            center_pos=(450, 500),
-            font_size=30,
-            bg_rgb=SchemeColors.blue.value,
-            high_bg_rgb=SchemeColors.light_blue.value,
-            text_rgb=SchemeColors.white.value,
-            text="Menu",
-            action=None
-        )
+        # menu button doesn't work :(
+
+        # menu_btn = UIElement(
+        #     center_pos=(450, 500),
+        #     font_size=30,
+        #     bg_rgb=SchemeColors.blue.value,
+        #     high_bg_rgb=SchemeColors.light_blue.value,
+        #     text_rgb=SchemeColors.white.value,
+        #     text="Menu",
+        #     action=None
+        # )
+
         quit_btn = UIElement(
-            center_pos=(550, 500),
-            font_size=30,
+            center_pos=(500, 500),
+            font_size=35,
             bg_rgb=SchemeColors.orange.value,
             high_bg_rgb=SchemeColors.light_orange.value,
             text_rgb=SchemeColors.white.value,
@@ -128,13 +129,13 @@ class Menu:
             action=GameState.quit
         )
 
-        buttons = RenderUpdates(menu_btn, quit_btn)
+        buttons = RenderUpdates(quit_btn)
 
         return self.menu_loop(screen, buttons)
 
     # loop until an action is returned by a button in the button sprites renderer
     def menu_loop(self, screen, buttons):
-        print("in menu_loop")
+        # print("in menu_loop")
         while True:
             mouse_up = False
             for event in pygame.event.get():
@@ -146,10 +147,10 @@ class Menu:
             for button in buttons:
                 ui_action = button.update(pygame.mouse.get_pos(), mouse_up)
                 if ui_action is not None:
-                    print("ui_action: ", ui_action)
+                    # print("ui_action: ", ui_action)
                     self.game_state = ui_action
                     return ui_action
-
+            # update screen
             buttons.draw(screen)
             pygame.display.flip()
 
