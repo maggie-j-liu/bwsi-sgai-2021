@@ -347,7 +347,6 @@ class Grid:
                             self.ped_list.remove_ped(r_, c_)
                             cell.remove_map_object(MapObjects.injured)
                             turn_score += self._get_score_of_other()  # negative reward for pedestrian burn death
-
         return turn_score
 
     def move_fire(self):
@@ -410,12 +409,15 @@ class Grid:
         # Update the player's position in the cells
         curr_cell.remove_map_object(MapObjects.player)
         next_cell.add_map_object(MapObjects.player)
-
+        print("current pos: ", curr_pos[0], curr_pos[1])
         # Update the map objects in cells so they move with the player (update injured, passengers)
         if MapObjects.injured in curr_cell.objects:
             curr_cell.remove_map_object(MapObjects.injured)
             next_cell.add_map_object(MapObjects.injured)
-            self.ped_list.remove_ped(curr_pos[0], curr_pos[1])
+
+            x, y = curr_pos[0], curr_pos[1]
+            if self.ped_list.exists((x,y)):
+                self.ped_list.save_ped(x, y)
             self.object_data['peds_picked_up'] += 1
 
     def _execute_turn_left(self):
@@ -592,6 +594,16 @@ class Grid:
         play_area = pg.Surface((self.rows * cell_size, self.cols * cell_size))
         play_area.fill(pg.color.Color(MapColors.play_area.value))
         game_screen.fill(pg.color.Color(MapColors.game_screen.value))
+        # energy bar & text
+        energy_bg, energy_color = pg.color.Color('#86868cff'), pg.color.Color("#3ddb62")
+        pg.draw.rect(self.game_screen, energy_bg, (650, 100, 300, 50))
+        energy_width = self.env.get_energy_remaining() * 3
+        pg.draw.rect(self.game_screen, energy_color, (660, 110, energy_width, 30))
+        pg.draw.rect(self.game_screen, pg.color.Color(MapColors.game_screen.value), (650, 50, 300, 50))
+        energy_font = pg.font.SysFont(pg.font.get_default_font(), 32)
+        text = energy_font.render('Energy Remaining: ' + str(self.env.get_energy_remaining()), 
+                                  True, pg.color.Color(MapColors.text.value))
+        game_screen.blit(text, (650, 70))
 
         # Populate each cell
         for r_ in range(self.rows):
@@ -602,31 +614,99 @@ class Grid:
                 if cell.terrain == Terrains.none:
                     cell_color = pg.color.Color(MapColors.black_tile.value)
                 elif cell.terrain == Terrains.out_of_bounds:
-                    cell_color = pg.color.Color(MapColors.black_tile.value)
+                    cell_img = pg.image.load(MapColors.black_tile.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
                 elif cell.terrain == Terrains.wall:
-                    cell_color = pg.color.Color(MapColors.wall_tile.value)
+                    cell_img = pg.image.load(MapColors.wall_tile.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
                 elif cell.terrain == Terrains.floor:
-                    cell_color = pg.color.Color(MapColors.floor_tile.value)
+                    cell_img = pg.image.load(MapColors.floor_tile.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
                 elif cell.terrain == Terrains.future_fire:
-                    cell_color = pg.color.Color(MapColors.future_fire_tile.value)
+                    floor_img = pg.image.load(MapColors.floor_tile.value)
+                    floor_img = pg.transform.scale(floor_img, (self.cell_size, self.cell_size))
+                    blit = (floor_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+
+                    cell_img = pg.image.load(MapColors.future_fire_tile.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
                 elif cell.terrain == Terrains.fire:
-                    cell_color = pg.color.Color(MapColors.fire_tile.value)
+                    # cell_color = pg.color.Color(MapColors.floor_tile.value)
+                    floor_img = pg.image.load(MapColors.floor_tile.value)
+                    floor_img = pg.transform.scale(floor_img, (self.cell_size, self.cell_size))
+                    blit = (floor_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+
+                    cell_img = pg.image.load(MapColors.fire_tile.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
                 elif cell.terrain == Terrains.hospital:
-                    cell_color = pg.color.Color(MapColors.hospital_tile.value)
+                    # cell_color = pg.color.Color(MapColors.floor_tile.value)
+                    floor_img = pg.image.load(MapColors.floor_tile.value)
+                    floor_img = pg.transform.scale(floor_img, (self.cell_size, self.cell_size))
+                    blit = (floor_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit) 
+                    
+                    cell_img = pg.image.load(MapColors.hospital_tile.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
                 else:
                     raise ValueError('Invalid cell terrain while rendering game image.')
 
                 # Draw the rectangle with the right color for the terrains
                 # rect is play area, color, and (left point, top point, width, height)
-                pg.draw.rect(play_area, cell_color, (c_ * cell_size, r_ * cell_size, cell_size, cell_size))
-                game_screen.blit(play_area, play_area.get_rect())
+                # pg.draw.rect(self.play_area, cell_color, (c_ * self.cell_size, r_ * self.cell_size,
+                #                                         self.cell_size, self.cell_size))
+                # self.game_screen.blit(self.play_area, self.play_area.get_rect())
 
                 # Add in the cell value string
                 pg.font.init()
                 cell_font = pg.font.SysFont(pg.font.get_default_font(), 20)
                 cell_val = self.get_human_cell_value(r_, c_)
-                text_surf = cell_font.render(cell_val, True, pg.color.Color(MapColors.text.value))
-                play_area.blit(text_surf, ((c_ * cell_size) + cell_size // 2, (r_ * cell_size) + cell_size // 2))
+                if 'B' in cell_val:
+                    cell_img = pg.image.load(MapColors.battery.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+
+                elif '^' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_up.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif 'v' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_down.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif '<' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_left.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+                elif '>' in cell_val:
+                    cell_img = pg.image.load(MapColors.ambulance_right.value)
+                    cell_img = pg.transform.scale(cell_img, (self.cell_size, self.cell_size))
+                    blit = (cell_img, (c_ * self.cell_size, r_ * self.cell_size))
+                    self.terrain_blits.append(blit)
+
+                if 'I' in cell_val:
+                    text_surf = cell_font.render('I', True, pg.color.Color(MapColors.text.value))
+                    # self.play_area.blit(text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
+                    #                                 (r_ * self.cell_size) + self.cell_size // 2))
+                    text_blit = (text_surf, ((c_ * self.cell_size) + self.cell_size // 2,
+                                            (r_ * self.cell_size) + self.cell_size // 2))
+                    self.text_blits.append(text_blit)
 
         # Handle window events and allow for the window to be closed
         game_exit = False

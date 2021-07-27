@@ -19,11 +19,18 @@ class Pedestrian:
         location = (x, y)
         # will NOT remove if hp is still above 0
         if bool(self.exists(location)):
+            print(self.get_hp(location=location))
             if self.get_hp(location=location) > 0:
                 pass
             else:
                 del self.objects[location]
                 self.death_count += 1
+
+    def save_ped(self, x, y):
+        location = (x, y)
+        print("save_ped", location, self.objects[location])
+        if location in self.objects:
+            del self.objects[location]
 
     # take away one hp from pedestrian object (to be called when location of ped is on fire terrain)
     def hurt(self, x, y):
