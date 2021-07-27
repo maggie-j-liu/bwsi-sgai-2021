@@ -51,7 +51,7 @@ class SGW:
 
     def end(self, stats):
         self.end_menu = Menu()
-        self.end_menu.load_menu(GameState.close)
+        self.end_menu.load_menu(GameState.close, stats=stats)
 
     def _setup(self):
         # Game parameters
