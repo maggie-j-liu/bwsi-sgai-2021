@@ -14,11 +14,15 @@ class Menu:
         self.bg_color = SchemeColors.white.value
         self.text_color = ()
         self.game_state = None
+        self.stats = {}
 
     def load_menu(self, game_state, stats=None):
         
         print("in load_menu ", game_state)
         self.game_state = game_state
+
+        if stats is not None:
+            self.stats = stats
 
         while True:
             # runs start screen if game state is title
@@ -100,7 +104,14 @@ class Menu:
             title_font.render_to(surface, (190, 90), "Wildfire Rescue", (0, 0, 0))
 
         elif self.game_state == GameState.close:
-            pass
+            desc_font = pygame.freetype.SysFont("Calibri", 30, italic=True)
+            num_font = pygame.freetype.SysFont("Calibri", 40, bold=True)
+            desc_font.render_to(surface, (100, 100), "You achieved a score of : ", (0, 0, 0))
+            num_font.render_to(surface, (500, 100), str(self.stats['score']), SchemeColors.orange.value)
+            desc_font.render_to(surface, (100, 150), "Number of turns: ", SchemeColors.light_purple.value)
+            num_font.render_to(surface, (500, 150), str(self.stats['turns_executed']), SchemeColors.purple.value)
+            desc_font.render_to(surface, (100, 180), "Percent of injured saved: ", SchemeColors.light_pink.value)
+            num_font.render_to(surface, (500, 180), str(self.stats['percent_saved']), SchemeColors.pink.value)
 
     def play_level(self):
         if self.game_state == GameState.new_human_game or self.game_state == GameState.new_machine_game:
@@ -122,8 +133,8 @@ class Menu:
         # )
 
         quit_btn = UIElement(
-            center_pos=(500, 500),
-            font_size=35,
+            center_pos=(500, 590),
+            font_size=55,
             bg_rgb=SchemeColors.orange.value,
             high_bg_rgb=SchemeColors.light_orange.value,
             text_rgb=SchemeColors.white.value,

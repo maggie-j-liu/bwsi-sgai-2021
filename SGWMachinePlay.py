@@ -5,7 +5,7 @@ import gym_sgw  # Required, don't remove!
 import pygame as pg
 from gym_sgw.envs.enums.Enums import Actions, Terrains, PlayTypes, MapProfiles, MapColors
 from choose_action import choose_action
-
+import random
 
 class SGW:
     """
