@@ -4,7 +4,7 @@ from SGWHumanPlay import SGW
 from gym_sgw.envs.enums.Enums import MapProfiles
 
 parser = argparse.ArgumentParser(description='CLI Argument Parser for Human Play.')
-parser.add_argument('--outfile', help='Data logging file name.', default='data_log.json')
+parser.add_argument('--outfile', help='Data logging file name.', default='data_log_human.json')
 parser.add_argument('--creation', help='Allow creation of output file.', default=True, action='store_true')
 
 

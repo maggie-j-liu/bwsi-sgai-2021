@@ -23,7 +23,11 @@ class Grid:
         self.player_location = None
         self.grid = self.read_in_map() if map_file is not None else self.random_grid()
         self.map_max_energy = None
+
+        # data to collect
         self.initial_peds = self.ped_list.get_num_peds()
+        self.object_data = {'squished': 0, 'delivered': 0, 'burned': 0, 
+                            'peds_picked_up': 0, 'batteries': 0, 'steps_in_fire': 0}
 
     def read_in_map(self):
 
@@ -371,9 +375,10 @@ class Grid:
                         next_cell = random.choice(free_cells)
                         next_cell.terrain = Terrains.future_fire
 
-    def get_percent_saved(self):
+    def get_data(self):
         percent = 1 - self.ped_list.get_num_peds()/self.initial_peds
-        return (round(percent, 2))*100
+        percent = (round(percent, 2))*100
+        return percent, self.object_data
 
     def _execute_step_forward(self):
 
@@ -409,7 +414,7 @@ class Grid:
         if MapObjects.injured in curr_cell.objects:
             curr_cell.remove_map_object(MapObjects.injured)
             next_cell.add_map_object(MapObjects.injured)
-            print("injured picked up")
+
             x, y = curr_pos[0], curr_pos[1]
             if self.ped_list.exists((x,y)):
                 self.ped_list.save_ped(x, y)
@@ -454,11 +459,13 @@ class Grid:
             if MapObjects.injured in end_cell.objects:
                 t_score += RESCUE_REWARD  # Deliver the injured
                 end_cell.remove_map_object(MapObjects.injured)  # Remove them from the board
+                self.object_data['delivered'] += 1
 
         # Add a penalty if you squish an injured person
         if end_cell.objects.count(MapObjects.injured) > 1:
             t_score += VIC_PENALTY  # Can only carry one so if there's more than one, squish
             end_cell.remove_map_object(MapObjects.injured)
+            self.object_data['squished'] += 1
 
         # Add a penalty for going into fire
         # if end_cell.terrain == Terrains.fire:
@@ -496,6 +503,7 @@ class Grid:
         if MapObjects.battery in end_cell.objects:
             t_energy += BAT_POWER  # I HAAAAVVVEEEEEE THEEEE POOWEEERRRRRRRRRRR
             end_cell.remove_map_object(MapObjects.battery)
+            self.object_data['batteries'] += 1
 
         # Drain energy if you hit mud (do not remove it from the board)
         # if end_cell.terrain == Terrains.mud:
@@ -504,6 +512,7 @@ class Grid:
         # drain energy if you hit fire
         if end_cell.terrain == Terrains.fire:
             t_energy += FIRE_DRAIN
+            self.object_data['steps_in_fire'] += 1
 
         # Add in base energy
         t_energy += BASE_ENERGY
@@ -553,7 +562,7 @@ class Grid:
             'action_taken': action_taken,
             'energy_remaining': energy_remaining,
             'game_score': game_score,
-            'percent_saved': self.get_percent_saved()
+            'percent_saved': self.get_data()[0]
         }
         return json.dumps(grid_data)
 
@@ -565,7 +574,7 @@ class Grid:
             'game_score': game_score,
             'player_location': self.player_location,
             'player_orientation': self.player_orientation,
-            'percent_saved': self.get_percent_saved()
+            'percent_saved': self.get_data()[0]
         }
         return self.grid, grid_data
 
@@ -708,10 +717,11 @@ class Grid:
         pg.quit()
 
     @staticmethod
-    def pp_info(turns_executed, action_taken, energy_remaining, game_score, percent_saved):
+    def pp_info(turns_executed, action_taken, energy_remaining, game_score, percent_saved, object_data):
         print('Turns Executed: {0} | Action: {1} | Energy Remaining: {2} | '
               'Score: {3} | Percent Saved: {4}'.format(turns_executed, action_taken, energy_remaining, 
                                                        game_score, percent_saved))
+        print(object_data)
 
 
 if __name__ == '__main__':
