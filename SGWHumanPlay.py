@@ -10,10 +10,11 @@ class SGW:
     """
     Human play game variant.
     """
-    def __init__(self, data_log_file='data_log_human.json', max_energy=50, map_file=None,
+    def __init__(self, data_log_file='data_log_human.json', raw_states_file='raw_states_human.json', max_energy=50, map_file=None,
                  rand_prof=MapProfiles.concentrated, num_rows=25, num_cols=25):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
+        self.RAW_STATES_FILE_NAME = raw_states_file
         self.GAME_ID = uuid.uuid4()
         self.env = None
         self.current_action = Actions.none
@@ -155,13 +156,20 @@ class SGW:
                                 'reward': reward,
                                 'game_done': done,
                                 'game_info': {k.replace('.', '_'): v for (k, v) in info.items()},
-                                'raw_state': observation,
                                 'percent_saved': self.env.grid.get_data()[0],
                                 'object_data': self.env.grid.get_data()[1]
                             }
+                            raw_state = {'game_id': str(self.GAME_ID), 
+                                         'turn': self.turn,
+                                         'raw_state': observation}
+
                             with open(self.DATA_LOG_FILE_NAME, 'a') as f_:
                                 f_.write(json.dumps(data_to_log) + '\n')
                                 f_.close()
+
+                            with open(self.RAW_STATES_FILE_NAME, 'a') as file_:
+                                file_.write(json.dumps(raw_state) + '\n')
+                                file_.close()
 
                             # Tick up turn
                             self.turn += 1
