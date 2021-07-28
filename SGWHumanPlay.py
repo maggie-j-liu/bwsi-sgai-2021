@@ -292,7 +292,7 @@ class SGW:
                             # Tick up turn
                             self.turn += 1
 
-                            if self.is_game_over:
+                            if self.is_game_over or self.env.grid.ped_on_map() == False:
                                 stats = {
                                     'turns_executed': self.env.turns_executed,
                                     'score': self.env.total_score,
