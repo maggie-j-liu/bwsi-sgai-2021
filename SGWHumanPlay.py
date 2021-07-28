@@ -39,16 +39,20 @@ class SGW:
         # Always do these actions upon start
         self._setup()
 
-    def start(self, env):
+    async def start(self, env_human, env_machine):
+        print('start here')
         self.start_menu = Menu()
-        sgw_env = env
-        if self.start_menu.load_menu(GameState.title):
-            sgw_env.run()  # actually runs the game when game state matches "new_game"
+        game = self.start_menu.load_menu(GameState.title)
+        print('game')
+        print(game)
+        if game == GameState.new_human_game:
+            env_human.run()  # actually runs the game when game state matches "new_human_game"
+        elif game == GameState.new_machine_game:
+            await env_machine.run()
 
     def end(self, stats):
         self.end_menu = Menu()
-        if self.end_menu.load_menu(GameState.close):
-            pass
+        self.end_menu.load_menu(GameState.close, stats=stats)
 
     def _setup(self):
         # Game parameters
@@ -63,10 +67,11 @@ class SGW:
         # Report success
         print('Created new environment {0} with GameID: {1}'.format(self.ENV_NAME, self.GAME_ID))
 
-    def done(self):
+    def done(self, stats):
         print("Episode finished after {} turns.".format(self.turn))
-        pg.quit()
         self._cleanup()
+        self.end(stats)
+        pg.quit()
 
     def _cleanup(self):
         self.env.close()
@@ -178,7 +183,10 @@ class SGW:
         # energy bar & text
         energy_bg, energy_color = pg.color.Color('#86868cff'), pg.color.Color("#3ddb62")
         pg.draw.rect(self.game_screen, energy_bg, (650, 100, 300, 50))
-        energy_width = self.env.get_energy_remaining() * 3
+        if self.env.get_energy_remaining() < 94: 
+            energy_width = self.env.get_energy_remaining() * 3
+        else: 
+            energy_width = 280
         pg.draw.rect(self.game_screen, energy_color, (660, 110, energy_width, 30))
         pg.draw.rect(self.game_screen, pg.color.Color(MapColors.game_screen.value), (650, 50, 300, 50))
         energy_font = pg.font.SysFont(pg.font.get_default_font(), 32)
@@ -210,11 +218,12 @@ class SGW:
         game_exit = False
         while not game_exit:
             for event in pg.event.get():
-                self._draw_icons()
                 # Exit game upon window close
                 if event.type == pg.QUIT:
                     game_exit = True
                     self.done()
+
+                self._draw_icons()
 
                 if self.turn < self.max_turn and not self.is_game_over:
 
@@ -275,8 +284,13 @@ class SGW:
                             self.turn += 1
 
                             if self.is_game_over:
+                                stats = {
+                                    'turns_executed': self.env.turns_executed,
+                                    'score': self.env.total_score,
+                                    'percent_saved': self.env.grid.get_percent_saved()
+                                }
                                 game_exit = True
-                                self.done()
+                                self.done(stats)
 
                             # Draw the screen
                             if not self.is_game_over:
@@ -284,7 +298,12 @@ class SGW:
 
                 else:
                     # Else end the game
+                    stats = {
+                        'turns_executed': self.env.turns_executed,
+                        'score': self.env.total_score,
+                        'percent_saved': self.env.grid.get_percent_saved()
+                    }
                     game_exit = True
-                    self.done()
+                    self.done(stats)
 
         pg.quit()

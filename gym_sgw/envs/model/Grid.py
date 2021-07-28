@@ -26,6 +26,7 @@ class Grid:
 
         # data to collect
         self.initial_peds = self.ped_list.get_num_peds()
+        self.burned = 0
         self.object_data = {'squished': 0, 'delivered': 0, 'burned': 0, 
                             'peds_picked_up': 0, 'batteries': 0, 'steps_in_fire': 0}
 
@@ -347,6 +348,7 @@ class Grid:
                             self.ped_list.remove_ped(r_, c_)
                             cell.remove_map_object(MapObjects.injured)
                             turn_score += self._get_score_of_other()  # negative reward for pedestrian burn death
+                            self.burned += 1
         return turn_score
 
     def move_fire(self):
@@ -375,10 +377,18 @@ class Grid:
                         next_cell = random.choice(free_cells)
                         next_cell.terrain = Terrains.future_fire
 
-    def get_data(self):
-        percent = 1 - self.ped_list.get_num_peds()/self.initial_peds
-        percent = (round(percent, 2))*100
-        return percent, self.object_data
+    def ped_on_map(self):
+        on_map = True
+        for r_ in range(1, self.rows):
+            for c_ in range(1, self.cols):
+                if MapObjects.injured in self.grid[r_][c_].objects:
+                    return True
+        if on_map == True:
+            return False
+
+    def get_percent_saved(self):
+        percent = 1 - ((self.ped_list.get_num_peds() + self.burned)/self.initial_peds)
+        return (round(percent*100, 2))
 
     def _execute_step_forward(self):
 
@@ -409,12 +419,11 @@ class Grid:
         # Update the player's position in the cells
         curr_cell.remove_map_object(MapObjects.player)
         next_cell.add_map_object(MapObjects.player)
-        print("current pos: ", curr_pos[0], curr_pos[1])
+        # print("current pos: ", curr_pos[0], curr_pos[1])
         # Update the map objects in cells so they move with the player (update injured, passengers)
         if MapObjects.injured in curr_cell.objects:
             curr_cell.remove_map_object(MapObjects.injured)
             next_cell.add_map_object(MapObjects.injured)
-
             x, y = curr_pos[0], curr_pos[1]
             if self.ped_list.exists((x,y)):
                 self.ped_list.save_ped(x, y)
@@ -431,6 +440,13 @@ class Grid:
             self.player_orientation = Orientations.right
         else:
             raise RuntimeError('Invalid orientation when trying to change orientation left')
+        curr_pos = self.player_location
+        curr_cell = self.grid[curr_pos[0]][curr_pos[1]]
+        if MapObjects.injured in curr_cell.objects:
+            print("injured picked up")
+            x, y = curr_pos[0], curr_pos[1]
+            if self.ped_list.exists((x,y)):
+                self.ped_list.save_ped(x, y)
 
     def _execute_turn_right(self):
         if self.player_orientation == Orientations.right:
@@ -443,6 +459,13 @@ class Grid:
             self.player_orientation = Orientations.left
         else:
             raise RuntimeError('Invalid orientation when trying to change orientation right')
+        curr_pos = self.player_location
+        curr_cell = self.grid[curr_pos[0]][curr_pos[1]]
+        if MapObjects.injured in curr_cell.objects:
+            print("injured picked up")
+            x, y = curr_pos[0], curr_pos[1]
+            if self.ped_list.exists((x,y)):
+                self.ped_list.save_ped(x, y)
 
     def _get_score_of_action(self):
         # Default Reward Scheme
@@ -597,7 +620,10 @@ class Grid:
         # energy bar & text
         energy_bg, energy_color = pg.color.Color('#86868cff'), pg.color.Color("#3ddb62")
         pg.draw.rect(self.game_screen, energy_bg, (650, 100, 300, 50))
-        energy_width = self.env.get_energy_remaining() * 3
+        if self.env.get_energy_remaining() < 94: 
+            energy_width = self.env.get_energy_remaining() * 3
+        else: 
+            energy_width = 280
         pg.draw.rect(self.game_screen, energy_color, (660, 110, energy_width, 30))
         pg.draw.rect(self.game_screen, pg.color.Color(MapColors.game_screen.value), (650, 50, 300, 50))
         energy_font = pg.font.SysFont(pg.font.get_default_font(), 32)

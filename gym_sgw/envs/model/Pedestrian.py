@@ -19,7 +19,7 @@ class Pedestrian:
         location = (x, y)
         # will NOT remove if hp is still above 0
         if bool(self.exists(location)):
-            print(self.get_hp(location=location))
+            # print(self.get_hp(location=location))
             if self.get_hp(location=location) > 0:
                 pass
             else:
@@ -28,7 +28,7 @@ class Pedestrian:
 
     def save_ped(self, x, y):
         location = (x, y)
-        print("save_ped", location, self.objects[location])
+        # print("save_ped", location, self.objects[location])
         if location in self.objects:
             del self.objects[location]
 

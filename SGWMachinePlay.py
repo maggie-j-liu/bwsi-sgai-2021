@@ -5,7 +5,7 @@ import gym_sgw  # Required, don't remove!
 import pygame as pg
 from gym_sgw.envs.enums.Enums import Actions, Terrains, PlayTypes, MapProfiles, MapColors
 from choose_action import choose_action
-
+import random
 
 class SGW:
     """
@@ -166,7 +166,10 @@ class SGW:
         # energy bar & text
         energy_bg, energy_color = pg.color.Color('#86868cff'), pg.color.Color("#3ddb62")
         pg.draw.rect(self.game_screen, energy_bg, (650, 100, 300, 50))
-        energy_width = self.env.get_energy_remaining() * 3
+        if self.env.get_energy_remaining() < 94: 
+            energy_width = self.env.get_energy_remaining() * 3
+        else: 
+            energy_width = 280
         pg.draw.rect(self.game_screen, energy_color, (660, 110, energy_width, 30))
         pg.draw.rect(self.game_screen, pg.color.Color(MapColors.game_screen.value), (650, 50, 300, 50))
         energy_font = pg.font.SysFont(pg.font.get_default_font(), 32)
@@ -279,7 +282,7 @@ class SGW:
 
                             # Tick up turn
                             self.turn += 1
-                            if self.is_game_over:
+                            if self.is_game_over or self.env.grid.ped_on_map() == False:
                                 game_exit = True
                                 self.done()
 
