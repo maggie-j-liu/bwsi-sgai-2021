@@ -427,6 +427,7 @@ class Grid:
             x, y = curr_pos[0], curr_pos[1]
             if self.ped_list.exists((x,y)):
                 self.ped_list.save_ped(x, y)
+        if MapObjects.injured in next_cell.objects and self.ped_list.exists((next_pos[0], next_pos[1])):
             self.object_data['peds_picked_up'] += 1
 
     def _execute_turn_left(self):
@@ -443,7 +444,6 @@ class Grid:
         curr_pos = self.player_location
         curr_cell = self.grid[curr_pos[0]][curr_pos[1]]
         if MapObjects.injured in curr_cell.objects:
-            print("injured picked up")
             x, y = curr_pos[0], curr_pos[1]
             if self.ped_list.exists((x,y)):
                 self.ped_list.save_ped(x, y)
@@ -462,7 +462,6 @@ class Grid:
         curr_pos = self.player_location
         curr_cell = self.grid[curr_pos[0]][curr_pos[1]]
         if MapObjects.injured in curr_cell.objects:
-            print("injured picked up")
             x, y = curr_pos[0], curr_pos[1]
             if self.ped_list.exists((x,y)):
                 self.ped_list.save_ped(x, y)
