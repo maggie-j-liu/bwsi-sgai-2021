@@ -6,7 +6,7 @@ from gym_sgw.envs.enums.Enums import MapProfiles
 import asyncio
 
 parser = argparse.ArgumentParser(description='CLI Argument Parser for Human Play.')
-parser.add_argument('--outfile', help='Data logging file name.', default='data_log.json')
+parser.add_argument('--outfile', help='Data logging file name.', default='data_log_human.json')
 parser.add_argument('--creation', help='Allow creation of output file.', default=True, action='store_true')
 parser.add_argument('--games', help='Number of games to play. (machine mode only)', default='1')
 parser.add_argument('--manual', help='Enables manual mode (machine mode only)', default=False, action='store_true')
