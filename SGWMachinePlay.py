@@ -265,8 +265,8 @@ class SGW:
                                 'reward': reward,
                                 'game_done': done,
                                 'game_info': {k.replace('.', '_'): v for (k, v) in info.items()},
-                                'percent_saved': self.env.grid.get_data()[0],
-                                'object_data': self.env.grid.get_data()[1]
+                                'percent_saved': self.env.grid.get_percent_saved(),
+                                'object_data': self.env.grid.object_data
                             }
 
                             raw_state = {'game_id': str(self.GAME_ID), 

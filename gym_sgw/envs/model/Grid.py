@@ -586,7 +586,7 @@ class Grid:
             'action_taken': action_taken,
             'energy_remaining': energy_remaining,
             'game_score': game_score,
-            'percent_saved': self.get_data()[0]
+            'percent_saved': self.get_percent_saved()
         }
         return json.dumps(grid_data)
 
@@ -598,7 +598,7 @@ class Grid:
             'game_score': game_score,
             'player_location': self.player_location,
             'player_orientation': self.player_orientation,
-            'percent_saved': self.get_data()[0]
+            'percent_saved': self.get_percent_saved()
         }
         return self.grid, grid_data
 
