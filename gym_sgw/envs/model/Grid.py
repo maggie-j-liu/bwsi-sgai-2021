@@ -225,10 +225,10 @@ class Grid:
             p_battery = 100
         elif mode == MapProfiles.concentrated:
             p_wall = 5
-            p_floor = 50
-            p_hospital = 60
-            p_fire = 80
-            p_injured = 90
+            p_floor = 40
+            p_hospital = 48
+            p_fire = 83
+            p_injured = 93
             p_battery = 100
         else:  # Default to the uniform case
             p_wall = 11
@@ -348,7 +348,7 @@ class Grid:
                             self.ped_list.remove_ped(r_, c_)
                             cell.remove_map_object(MapObjects.injured)
                             turn_score += self._get_score_of_other()  # negative reward for pedestrian burn death
-                            self.burned += 1
+                            self.object_data['burned'] += 1
         return turn_score
 
     def move_fire(self):
