@@ -217,7 +217,6 @@ class SGW:
                     self.done()
 
                 if self.turn < self.max_turn and not self.is_game_over:
-
                     # Execute main turn logic
                     # Catch a common key stroke to advance to next machine turn
                     keep_playing = False
@@ -301,6 +300,7 @@ class SGW:
                                     f_.write(json.dumps(data_to_log) + '\n')
                                     f_.close()
                                 self.done()
+                                break
 
                             # Draw the screen
                             if not self.is_game_over:
