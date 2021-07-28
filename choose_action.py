@@ -11,7 +11,6 @@ def choose_action(observation):
     if cost is greater, go to the battery
     '''
     grid, status = observation
-    print(status)
     # up, right, down, left
     di = [-1, 0, 1, 0]; dj = [0, 1, 0, -1]
     n = len(grid); m = len(grid[0])
@@ -66,7 +65,6 @@ def choose_action(observation):
                 dist[i][j][nextori][has_person][passed_hospital] = distance - cost
                 heapq.heappush(pq, (distance - cost, (i, j, nextori, has_person, passed_hospital), act if act != Actions.none else Actions.turn_left if k == -1 else Actions.turn_right))
     if bestdist <= energy_remaining + BAT_POWER:
-        print('1')
         return bestact
 
     '''
@@ -106,8 +104,6 @@ def choose_action(observation):
                 dist[i][j][nextori] = distance - cost
                 heapq.heappush(pq, (distance - cost, (i, j, nextori), act if act != Actions.none else Actions.turn_left if k == -1 else Actions.turn_right))
     if bestact == Actions.quit:
-        print('2')
         return bestact_without_bat
-    print('3')
     return bestact
 
