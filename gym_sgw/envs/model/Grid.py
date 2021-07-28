@@ -387,7 +387,7 @@ class Grid:
             return False
 
     def get_percent_saved(self):
-        percent = 1 - ((self.ped_list.get_num_peds() + self.burned)/self.initial_peds)
+        percent = 1 - ((self.ped_list.get_num_peds() + self.object_data['burned'])/self.initial_peds)
         return (round(percent*100, 2))
 
     def _execute_step_forward(self):
