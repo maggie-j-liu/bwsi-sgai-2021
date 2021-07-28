@@ -12,11 +12,12 @@ class SGW:
     """
     Human play game variant.
     """
-    def __init__(self, data_log_file='data_log_human.json', raw_states_file='raw_states_human.json', max_energy=50, map_file=None,
+    def __init__(self, data_log_file='data_log_human.json', raw_states_file='raw_states_human.json', final_data_file='final_data_human.json', max_energy=50, map_file=None,
                  rand_prof=MapProfiles.concentrated, num_rows=25, num_cols=25):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
         self.RAW_STATES_FILE_NAME = raw_states_file
+        self.FINAL_DATA_FILE_NAME = final_data_file
         self.GAME_ID = uuid.uuid4()
         self.env = None
         self.current_action = Actions.none
@@ -35,6 +36,7 @@ class SGW:
         self.end_menu = None
         self.terrain_blits = []
         self.text_blits = []
+        self.last_data_logged = {}
 
         # Always do these actions upon start
         self._setup()
@@ -221,6 +223,9 @@ class SGW:
                 # Exit game upon window close
                 if event.type == pg.QUIT:
                     game_exit = True
+                    with open(self.FINAL_DATA_FILE_NAME, 'a') as f_:
+                        f_.write(json.dumps(self.last_data_logged) + '\n')
+                        f_.close()
                     self.done()
 
                 self._draw_icons()
@@ -234,6 +239,9 @@ class SGW:
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_ESCAPE:
                             game_exit = True
+                            with open(self.FINAL_DATA_FILE_NAME, 'a') as f_:
+                                f_.write(json.dumps(self.last_data_logged) + '\n')
+                                f_.close()
                             pg.quit()
                             self.done()
                         if event.key in [pg.K_w, pg.K_SPACE, pg.K_UP, pg.K_3]:
@@ -268,6 +276,7 @@ class SGW:
                                 'percent_saved': self.env.grid.get_percent_saved(),
                                 'object_data': self.env.grid.object_data
                             }
+                            self.last_data_logged = data_to_log
                             raw_state = {'game_id': str(self.GAME_ID), 
                                          'turn': self.turn,
                                          'raw_state': observation}
@@ -290,6 +299,9 @@ class SGW:
                                     'percent_saved': self.env.grid.get_percent_saved()
                                 }
                                 game_exit = True
+                                with open(self.FINAL_DATA_FILE_NAME, 'a') as file_:
+                                    file_.write(json.dumps(data_to_log) + '\n')
+                                    file_.close()
                                 self.done(stats)
 
                             # Draw the screen
@@ -304,6 +316,9 @@ class SGW:
                         'percent_saved': self.env.grid.get_percent_saved()
                     }
                     game_exit = True
+                    with open(self.FINAL_DATA_FILE_NAME, 'a') as f_:
+                        f_.write(json.dumps(self.last_data_logged) + '\n')
+                        f_.close()
                     self.done(stats)
 
         pg.quit()

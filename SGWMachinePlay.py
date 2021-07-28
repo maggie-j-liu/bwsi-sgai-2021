@@ -11,11 +11,12 @@ class SGW:
     """
     Machine play game variant using a pathfinding algorithm.
     """
-    def __init__(self, data_log_file='data_log_machine.json', raw_states_file='raw_states_machine.json', max_energy=50, map_file=None,
+    def __init__(self, data_log_file='data_log_machine.json', raw_states_file='raw_states_machine.json', final_data_file='final_data_machine.json', max_energy=50, map_file=None,
                  rand_prof=MapProfiles.concentrated, num_rows=25, num_cols=25, manual=False):
         self.ENV_NAME = 'SGW-v0'
         self.DATA_LOG_FILE_NAME = data_log_file
         self.RAW_STATES_FILE_NAME = raw_states_file
+        self.FINAL_DATA_FILE_NAME = final_data_file
         self.GAME_ID = uuid.uuid4()
         self.env = None
         self.current_action = Actions.none
@@ -34,6 +35,7 @@ class SGW:
         self.manual = manual
         self.terrain_blits = []
         self.text_blits = []
+        self.last_data_logged = {}
 
         # Always do these actions upon start
         self._setup()
@@ -209,6 +211,9 @@ class SGW:
                 # Exit game upon window close
                 if event.type == pg.QUIT:
                     game_exit = True
+                    with open(self.FINAL_DATA_FILE_NAME, 'a') as f_:
+                        f_.write(json.dumps(self.last_data_logged) + '\n')
+                        f_.close()
                     self.done()
 
                 if self.turn < self.max_turn and not self.is_game_over:
@@ -221,6 +226,9 @@ class SGW:
                         if event.type == pg.KEYDOWN:
                             if event.key == pg.K_ESCAPE:
                                 game_exit = True
+                                with open(self.FINAL_DATA_FILE_NAME, 'a') as f_:
+                                    f_.write(json.dumps(self.last_data_logged) + '\n')
+                                    f_.close()
                                 self.done()
                             if event.key in [pg.K_SPACE, pg.K_KP_ENTER, pg.K_UP, pg.K_DOWN, pg.K_LEFT, pg.K_RIGHT,
                                              pg.K_w, pg.K_a, pg.K_s, pg.K_d, pg.K_0, pg.K_1, pg.K_2, pg.K_3]:
@@ -236,6 +244,9 @@ class SGW:
                     if action is not None:
                         if action == Actions.quit:
                             game_exit = True
+                            with open(self.FINAL_DATA_FILE_NAME, 'a') as f_:
+                                f_.write(json.dumps(self.last_data_logged) + '\n')
+                                f_.close()
                             self.done()
                         if action in [Actions.step_forward, Actions.turn_right, Actions.turn_left, Actions.none]:
                             # We have a valid action, so let's process it and update the screen
@@ -269,6 +280,8 @@ class SGW:
                                 'object_data': self.env.grid.object_data
                             }
 
+                            self.last_data_logged = data_to_log
+
                             raw_state = {'game_id': str(self.GAME_ID), 
                                          'turn': self.turn,
                                          'raw_state': observation}
@@ -284,6 +297,9 @@ class SGW:
                             self.turn += 1
                             if self.is_game_over or self.env.grid.ped_on_map() == False:
                                 game_exit = True
+                                with open(self.FINAL_DATA_FILE_NAME, 'a') as f_:
+                                    f_.write(json.dumps(data_to_log) + '\n')
+                                    f_.close()
                                 self.done()
 
                             # Draw the screen
@@ -295,6 +311,9 @@ class SGW:
                 else:
                     # Else end the game
                     game_exit = True
+                    with open(self.FINAL_DATA_FILE_NAME, 'a') as f_:
+                        f_.write(json.dumps(self.last_data_logged) + '\n')
+                        f_.close()
                     self.done()
 
         pg.quit()
