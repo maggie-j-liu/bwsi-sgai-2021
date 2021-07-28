@@ -27,7 +27,7 @@ class SGW:
         self.num_cols = num_cols
         self.is_game_over = False
         self.turn = 0
-        self.max_turn = 300  # to prevent endless loops and games
+        self.max_turn = 1000  # to prevent endless loops and games
         self.cell_size = 30
         self.game_screen = None
         self.play_area = None
